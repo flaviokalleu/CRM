@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Dashboard</title>
+    
+    <!-- Vinculando o arquivo CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/financedashboard.css' %}">
+    
+    <!-- Vinculando a biblioteca ionicons para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/collection/icon/icon.css">
+</head>
+<body>
+    <h2>Finance Dashboard</h2>
+
+    <!-- Cartões -->
+    <div class="cardBox">
+        <div class="card">
+            <div>
+                <h1>Saldo: R${{ saldo }}</h1>
+                <div class="cardName">Saldo</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="cash-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers">R${{ despesas }}</div>
+                <div class="cardName">Despesas</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="arrow-down-outline"></ion-icon>
+            </div>
+        </div>
+
+        <div class="card">
+            <div>
+                <div class="numbers">R${{ receitas }}</div>
+                <div class="cardName">Receitas</div>
+            </div>
+            <div class="iconBx">
+                <ion-icon name="arrow-up-outline"></ion-icon>
+            </div>
+        </div>
+    </div>
+
+    <h4>Adicionar Despesa/Receita</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <h4>Transações</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in transactions %}
+            <tr>
+                <td>{{ t.description }}</td>
+                <td>R${{ t.valor }}</td>
+                <td>{{ t.get_tipo_display }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Vinculando o arquivo JavaScript -->
+    <script src="{% static 'financedashboard.js' %}"></script>
+</body>
+</html>

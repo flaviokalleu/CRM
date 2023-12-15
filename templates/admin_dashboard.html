@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo By | Flavio Kalleu</title>
+    <!-- Incluindo Bootstrap CSS -->
+    
+    <!-- Seu CSS personalizado deve vir depois do Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <!-- JS files -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+
+
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="logo-apple"></ion-icon>
+                        </span>
+                        <span class="title">3 BROKER</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>                
+                
+                <li>
+                    <a href="{% url 'cadastro_corretores' %}">
+                        <span class="icon">
+                            <ion-icon name="person-add-outline"></ion-icon>
+                        </span>
+                        <span class="title">Cadastro Corretores</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'cliente-create' %}">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Cadastro Clientes</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'cadastro_correspondentes' %}">
+                        <span class="icon">
+                            <ion-icon name="people-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Cadastro Correspondentes</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'finance_dashboard' %}">
+                        <span class="icon">
+                            <ion-icon name="wallet-outline"></ion-icon>
+                        </span>
+                        <span class="title">Finance Dashboard</span>
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="{% url 'consulta_cpf' %}">
+                        <span class="icon">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </span>
+                        <span class="title">Consulta CPF</span>
+                    </a>
+                </li>
+                
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'logout' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <div class="search">
+                    <label>
+                        <input type="text" placeholder="Search here">
+                        <ion-icon name="search-outline"></ion-icon>
+                    </label>
+                </div>
+
+                <div class="user">
+                    <img src="assets/imgs/customer01.jpg" alt="">
+                </div>
+            </div>
+
+            <!-- ======================= Cards ================== -->
+            <div class="cardBox">
+                <!-- Saldo -->
+                <div class="card">
+                    <div>
+                        <div class="numbers">R${{ saldo }}</div>
+                        <div class="cardName">Saldo</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="wallet-outline"></ion-icon>
+                    </div>
+                </div>
+            
+                <!-- Despesas -->
+                <div class="card">
+                    <div>
+                        <div class="numbers">R${{ despesas }}</div>
+                        <div class="cardName">Despesas</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="arrow-down-outline"></ion-icon>
+                    </div>
+                </div>
+            
+                <!-- Receitas -->
+                <div class="card">
+                    <div>
+                        <div class="numbers">R${{ receitas }}</div>
+                        <div class="cardName">Receitas</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="arrow-up-outline"></ion-icon>
+                    </div>
+                </div>
+            
+                <!-- Cartão de Crédito -->
+                <div class="card">
+                    <div>
+                        <div class="numbers">R${{ credit_card }}</div>
+                        <div class="cardName">Cartão de Crédito</div>
+                    </div>
+                    <div class="iconBx">
+                        <ion-icon name="card-outline"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            
+<!-- ========== Order Details List ========== -->
+<div class="my-4" style="position: relative; height:40vh; width:80vw">
+    <canvas id="transactionsChart"></canvas>
+</div>
+
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+    <div class="mb-4 flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-center">Transações</h2>
+        
+        <!-- Botão que abre o modal -->
+        <button id="openModalBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Adicionar Transação
+        </button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full leading-normal text-center">
+            <thead>
+                <tr>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Descrição</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Valor</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in recent_transactions %}
+                <tr class="hover:bg-gray-100">
+                    <td class="py-4 px-6 border-b border-gray-200">{{ t.description }}</td>
+                    <td class="py-4 px-6 border-b border-gray-200">R${{ t.valor }}</td>
+                    <td class="py-4 px-6 border-b border-gray-200">
+                        <a href="{% url 'delete_transaction' t.id %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded-full">
+                            Deletar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="mt-4">
+        <div class="flex justify-center">
+            <span class="mr-2">
+                {% if recent_transactions.has_previous %}
+                    <a href="?page=1" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Primeira
+                    </a>
+                    <a href="?page={{ recent_transactions.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Anterior
+                    </a>
+                {% endif %}
+    
+                {% if recent_transactions.has_next %}
+                    <a href="?page={{ recent_transactions.next_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Próxima
+                    </a>
+                    <a href="?page={{ recent_transactions.paginator.num_pages }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Última
+                    </a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ========== Fixed Expenses Container ========== -->
+<div class="bg-white shadow-md rounded px-8 pt-6 pb-8 flex flex-col">
+    <div class="mb-4 flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-center">Despesas Fixas</h2>
+        
+        <!-- Botão que chama o modal para adicionar despesa fixa -->
+            <button onclick="openExpenseModal()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Adicionar Despesa Fixa
+            </button>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full leading-normal text-center">
+            <thead>
+                <tr>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Descrição</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Dia de Vencimento</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Valor</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Status</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Ação</th>
+                    <th class="py-4 px-6 bg-gray-300 font-bold uppercase text-sm text-grey-dark border-b border-gray-200">Deletar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in fixed_expenses %}
+                <tr class="hover:bg-gray-100">
+                    <td class="py-4 px-6 border-b border-gray-200">{{ expense.description }}</td>
+                    <td class="py-4 px-6 border-b border-gray-200">{{ expense.due_day }}</td>
+                    <td class="py-4 px-6 border-b border-gray-200">R$ {{ expense.amount }}</td>
+                    <td class="py-4 px-6 border-b border-gray-200">
+                        {% if expense.is_paid %}
+                            <span class="inline-block text-sm font-bold px-2 rounded-full bg-green-200 text-green-800">
+                                Pago
+                            </span>
+                        {% else %}
+                            <span class="inline-block text-sm font-bold px-2 rounded-full bg-red-200 text-red-800">
+                                Não Pago
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 px-6 border-b border-gray-200">
+                        {% if not expense.is_paid %}
+                            <a href="{% url 'mark_as_paid' expense.id %}" class="text-blue-500 hover:text-blue-700 underline">
+                                Marcar como Pago
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 px-6 border-b border-gray-200">
+                        <a href="{% url 'delete_expense' expense.id %}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded-full">
+                            Deletar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="mt-4 text-center">
+            <div class="flex justify-center">
+                <span class="mr-2">
+                    {% if fixed_expenses.has_previous %}
+                        <a href="?page=1" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Primeira
+                        </a>
+                        <a href="?page={{ fixed_expenses.previous_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Anterior
+                        </a>
+                    {% endif %}
+    
+                    {% if fixed_expenses.has_next %}
+                        <a href="?page={{ fixed_expenses.next_page_number }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Próxima
+                        </a>
+                        <a href="?page={{ fixed_expenses.paginator.num_pages }}" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Última
+                        </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            
+            <!-- Modal para adicionar despesa fixa -->
+<div id="addExpenseModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen px-4 text-center">
+        <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <div class="bg-white rounded-lg p-5 max-w-lg mx-auto relative z-10">
+            <h2 class="text-2xl mb-4">Adicionar Despesa Fixa</h2>
+
+            <!-- Formulário de Despesa Fixa -->
+            <form action="{% url 'add_fixed_expense' %}" method="post" class="mt-5">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="description" class="block text-sm font-bold mb-2">Descrição:</label>
+                    <input type="text" name="description" required class="block w-full border p-3 rounded">
+                </div>
+                <div class="mb-4">
+                    <label for="due_day" class="block text-sm font-bold mb-2">Dia de Vencimento:</label>
+                    <input type="number" name="due_day" min="1" max="31" required class="block w-full border p-3 rounded">
+                </div>
+                <div class="mb-4">
+                    <label for="amount" class="block text-sm font-bold mb-2">Valor:</label>
+                    <input type="number" name="amount" required class="block w-full border p-3 rounded">
+                </div>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Adicionar</button>
+            </form>
+
+            <span id="closeModal" class="text-gray-700 hover:text-gray-900 absolute top-4 right-4 cursor-pointer" onclick="closeExpenseModal()">&times;</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openExpenseModal() {
+        document.getElementById("addExpenseModal").style.display = "block";
+    }
+
+    function closeExpenseModal() {
+        document.getElementById("addExpenseModal").style.display = "none";
+    }
+</script>
+<script>
+    // Dados vindos do Django
+    var totalReceitas = {{ total_receitas }};
+    var totalDespesas = {{ total_despesas }};
+    var labels = ['Receitas', 'Despesas'];
+
+    var ctx = document.getElementById('transactionsChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'doughnut',  // Gráfico de pizza (doughnut) geralmente tem um aspecto mais moderno
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Valores',
+                data: [totalReceitas, totalDespesas],
+                backgroundColor: [
+                    'rgba(33, 150, 243, 0.9)',  // Azul
+                    'rgba(244, 67, 54, 0.9)'   // Vermelho
+                ],
+                borderColor: [
+                    'rgba(33, 150, 243, 1)',
+                    'rgba(244, 67, 54, 1)'
+                ],
+                borderWidth: 1,
+                hoverBackgroundColor: [  // Cor quando o mouse estiver sobre o item
+                    'rgba(33, 150, 243, 1)',
+                    'rgba(244, 67, 54, 1)'
+                ],
+                hoverBorderColor: [
+                    'rgba(255, 255, 255, 1)',
+                    'rgba(255, 255, 255, 1)'
+                ]
+            }]
+        },
+                
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            cutoutPercentage: 75,  // Isto fará com que o centro do gráfico de pizza seja vazado, dando-lhe um efeito "doughnut" (rosca).
+            animation: {
+                animateRotate: true,
+                animateScale: true
+            },
+            legend: {  // Configurações da legenda
+                position: 'bottom',
+                labels: {
+                    boxWidth: 12,
+                    padding: 20,
+                    fontStyle: 'bold',
+                    fontColor: '#aaa'
+                }
+            },
+            tooltips: {  // Configurações de dicas de ferramenta
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                titleFontColor: '#fff',
+                bodyFontColor: '#fff',
+                cornerRadius: 3,
+                xPadding: 14,
+                yPadding: 14,
+                displayColors: false
+            }
+        }
+    });
+</script>
+
+
+
+
+
+
+
+
+<div id="customModal" class="modal hidden fixed w-full  h-full top-0 left-0 flex items-center justify-center">
+    <div class="modal-content bg-white w-2/3 md:max-w-3xl mx-auto rounded shadow-lg p-6">
+        <!-- Botão de fechar -->
+        <div class="flex justify-end">
+            <span id="closeModalBtn" class="cursor-pointer text-gray-600 hover:text-gray-900 text-xl">&times;</span>
+        </div>
+        
+        <h2 class="text-center text-2xl mb-5">Adicionar Transação</h2>
+        
+        <form method="post" action="{% url 'admin_dashboard' %}" class="space-y-5">
+            {% csrf_token %}
+            <div>
+                <label for="type" class="block text-sm font-bold mb-2">Tipo:</label>
+                <select name="tipo" required class="block w-full border p-3 rounded">
+                    <option value="DESPESA">Despesa</option>
+                    <option value="RECEITA">Receita</option>
+                </select>
+            </div>
+            <div>
+                <label for="amount" class="block text-sm font-bold mb-2">Valor:</label>
+                <input type="number" name="valor" required class="block w-full border p-3 rounded">
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-bold mb-2">Descrição:</label>
+                <input type="text" name="description" required class="block w-full border p-3 rounded">
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Adicionar
+            </button>
+        </form>
+    </div>
+</div>
+
+   
+<canvas id="transactionsChart"></canvas>
+
+<script>
+    // Dados vindos do Django
+    var monthlyReceitas = {{ monthly_receitas|safe }};
+    var monthlyDespesas = {{ monthly_despesas|safe }};
+    var labels = Object.keys(monthlyReceitas);  // Supondo que ambos tenham os mesmos meses
+
+    var ctx = document.getElementById('transactionsChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Receitas',
+                data: Object.values(monthlyReceitas),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            },
+            {
+                label: 'Despesas',
+                data: Object.values(monthlyDespesas),
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+
+    <!-- =========== Scripts =========  -->
+
+    <!-- Adicione jQuery primeiro, depois Popper.js, depois Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

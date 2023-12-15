@@ -1,0 +1,23 @@
+#Criar Cadastro de corretor
+#Criar Cadastro de correspondente
+#Criar Cadastro de cliente
+
+#Dashboard corretor
+#Criar cliente
+#Lista de Clientes
+#Consultar CPF
+configurações
+
+Dashboard correspondente
+Criar Cliente
+Gerir Clientes
+Consultar CPF
+configurações
+
+Dashboard administrador
+Gerir Clientes
+Gerir correspondente
+Gerir Corretores
+Finanças
+Consulta de CPF
+configurações

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* Estilos básicos para centralizar e dar um pouco de estilo ao formulário */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    {% for error in form.non_field_errors %}
+   <div class="alert alert-danger">{{ error }}</div>
+{% endfor %}
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.username.label_tag }} {{ form.username }}
+            {{ form.password.label_tag }} {{ form.password }}
+            <button type="submit">Login</button>
+        </form>
+        
+    </div>
+</body>
+</html>

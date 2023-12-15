@@ -1,0 +1,117 @@
+<style>
+    body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #3c3f9f;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .form-container {
+        width: 33%;
+        background-color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container .header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .form-container h2 {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3c3f9f;
+    }
+
+    .form-container p {
+        color: #888;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        outline: none;
+    }
+
+    .form-group input:focus {
+        border-color: #a5acff;
+        box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+
+    .error-message {
+        color: red;
+        font-size: 12px;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #3c3f9f;
+        color: white;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #292c7f;
+    }
+
+    .submit-btn:focus {
+        box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+</style>
+
+<div class="form-container">
+    <div class="header">
+        <h2>Formulário</h2>
+        <p>Insira suas informações abaixo obs: não adicione o "9" no numero de telefone.</p>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.name == "telefone" %}
+            <div style="display: flex; align-items: center;">
+                <span>55</span>
+                <input id="{{ field.id_for_label }}" type="text" name="{{ field.name }}" autocomplete="off" placeholder="DDD Número" style="flex-grow: 1; margin-left: 10px;">
+            </div>
+            {% else %}
+            <input id="{{ field.id_for_label }}" type="text" name="{{ field.name }}" autocomplete="off">
+            {% endif %}
+            {% if field.errors %}
+            <p class="error-message">{{ field.errors.0 }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+
+        <div>
+            <button type="submit" class="submit-btn">Enviar</button>
+        </div>
+    </form>
+</div>

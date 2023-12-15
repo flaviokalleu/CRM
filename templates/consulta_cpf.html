@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+    <title>Consulta de CPF 3Brokers</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gradient-to-r from-blue-800 to-blue-700 h-screen font-sans flex items-center justify-center"
+  >
+    <div class="p-10 rounded-xl shadow-xl bg-white max-w-xs sm:max-w-md w-full">
+      <h1 class="text-blue-900 text-3xl mb-6 font-bold text-center">
+        Consulta 3 Brokers
+      </h1>
+
+      <form action="/consultacpf/" method="post" id="cpfForm">
+
+        <div class="mb-4">
+          <label for="cpf" class="block mb-2 text-blue-900 text-lg">
+            Digite o CPF:
+          </label>
+          <input
+            type="text"
+            name="cpf"
+            id="cpf"
+            placeholder="###.###.###-## ou ###########"
+            required
+            pattern="(\d{3}\.\d{3}\.\d{3}-\d{2}|\d{11})"
+            class="w-full px-3 py-2 placeholder-blue-300 border border-gray-300 rounded-md text-blue-900 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+          />
+        </div>
+
+        <div class="mb-2 space-y-2">
+          <button
+            type="submit"
+            class="btn w-full py-3 px-6 text-white rounded-full bg-gradient-to-r from-blue-600 to-blue-800 focus:outline-none hover:from-green-500 hover:to-green-700 transform transition hover:scale-105"
+          >
+            <ion-icon name="search" class="mr-2 align-middle"></ion-icon> Buscar
+          </button>
+
+          <a
+            href="#"
+            class="download-button btn w-full py-3 px-6 text-white rounded-full bg-gradient-to-r from-blue-600 to-blue-800 focus:outline-none hover:from-green-500 hover:to-green-700 transform transition hover:scale-105 hidden"
+          >
+            <ion-icon
+              name="cloud-download"
+              class="mr-2 align-middle"
+            ></ion-icon>
+            Baixar Resultado
+          </a>
+
+          <a
+            href="javascript:history.back()"
+            class="btn w-full py-3 px-6 text-blue-800 border-2 border-blue-600 rounded-full bg-transparent hover:bg-blue-600 hover:text-white focus:outline-none transform transition hover:scale-105"
+          >
+            <ion-icon name="arrow-back" class="mr-2 align-middle"></ion-icon>
+            Voltar
+          </a>
+        </div>
+      </form>
+
+      <div class="text-blue-900 mb-4">
+        <h3 class="font-bold text-xl mb-2">Como funciona?</h3>
+        <p>
+          Após inserir seu CPF e clicar em "Buscar", nosso sistema irá consultar
+          as informações e fornecerá um arquivo para download com os resultados.
+        </p>
+      </div>
+      <!-- Card de Sucesso -->
+      <div
+        id="successCard"
+        class="p-10 rounded-xl shadow-xl bg-green-100 border border-green-500 max-w-xs sm:max-w-md w-full hidden mt-6"
+      >
+        <h2 class="text-green-800 text-2xl mb-4 font-bold text-center">
+          Consulta Concluída!
+        </h2>
+        <p class="text-green-700 text-center" id="successMessage">
+          Seu arquivo está pronto para download.
+        </p>
+      </div>
+      <!-- Spinner & Message -->
+      <div
+        id="loading"
+        class="mt-6 flex flex-col justify-center items-center opacity-0 transition"
+      >
+        <div
+          class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
+        ></div>
+        <div class="text-blue-900">
+          Aguarde, estamos buscando informações. Por favor, aguarde um
+          momento...
+        </div>
+      </div>
+    </div>
+    <!-- JavaScript para mostrar spinner e mensagem ao submeter o formulário -->
+    <script>
+      const cpfForm = document.getElementById("cpfForm");
+      const loading = document.getElementById("loading");
+      const downloadButton = document.querySelector(".download-button");
+      const successCard = document.getElementById("successCard");
+      const successMessage = document.getElementById("successMessage");
+
+      cpfForm.addEventListener("submit", async function (e) {
+        e.preventDefault(); // Evita que o formulário seja enviado
+
+        loading.style.opacity = "1";
+
+        const formData = new FormData(cpfForm);
+        const response = await fetch("/consultacpf/", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+
+        loading.style.opacity = "0"; // Oculta o spinner
+
+        if (data.message === "Consulta concluída com sucesso.") {
+          successMessage.textContent = data.message;
+          downloadButton.href = data.file_url;
+          downloadButton.classList.remove("hidden"); // Mostra o botão de download
+          successCard.classList.remove("hidden"); // Mostra o card de sucesso
+        } else {
+          alert("Ocorreu um erro. Tente novamente.");
+        }
+      });
+    </script>
+    
+    <style>
+      /* Estilos para o spinner */
+      .loader {
+        border-top-color: #3498db;
+        animation: spinner 1.5s linear infinite;
+      }
+
+      @keyframes spinner {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      ion-icon {
+        font-size: 24px;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+    </style>
+  </body>
+</html>

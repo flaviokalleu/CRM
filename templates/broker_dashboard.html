@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Admin Dashboard | Korsat X Parmaga</title>
+    <!-- ======= Styles ====== -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<Style>
+    .status-btn {
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+    }
+    .reprovado {
+        background-color: #FF0000; /* cor vermelha para representar reprovado */
+    }
+    .aguardando_aprovacao {
+        background-color: #FFC107; /* cor amarela */
+    }
+    
+    .documentacao_pendente {
+        background-color: #FF5722; /* cor laranja */
+    }
+    
+    .aguardando_cancelamento_qv {
+        background-color: #FFEB3B; /* cor amarela clara */
+    }
+    
+    .cliente_aprovado {
+        background-color: #4CAF50; /* cor verde */
+    }
+    
+    .proposta_apresentada {
+        background-color: #2196F3; /* cor azul */
+    }
+    
+    .visita_efetuada {
+        background-color: #9C27B0; /* cor roxa */
+    }
+    
+    .fechamento_proposta {
+        background-color: #E91E63; /* cor rosa */
+    }
+    
+    .pagamento_tsd {
+        background-color: #3F51B5; /* cor azul escuro */
+    }
+    
+    .conformidade {
+        background-color: #009688; /* cor verde água */
+    }
+    
+    .assinatura_minuta_caixa {
+        background-color: #CDDC39; /* cor verde-limão */
+    }
+    
+    .comissao_recebida {
+        background-color: #8BC34A; /* cor verde claro */
+    }
+    
+    .concluido {
+        background-color: #4CAF50; /* cor verde */
+    }
+    
+</style>
+<body>
+    <!-- =============== Navigation ================ -->
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="logo-apple"></ion-icon>
+                        </span>
+                        <span class="title">3 BROKER</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="home-outline"></ion-icon>
+                        </span>
+                        <span class="title">Dashboard</span>
+                    </a>
+                </li>               
+                
+                
+                
+                <li>
+                    <a href="{% url 'cliente-create' %}">
+                        <span class="icon">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                        </span>
+                        <span class="title">Cadastro Clientes</span>
+                    </a>
+                </li>               
+                
+                
+                
+                
+                <li>
+                    <a href="{% url 'consulta_cpf' %}">
+                        <span class="icon">
+                            <ion-icon name="search-outline"></ion-icon>
+                        </span>
+                        <span class="title">Consulta CPF</span>
+                    </a>
+                </li>
+                
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Settings</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <span class="icon">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </span>
+                        <span class="title">Password</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'logout' %}">
+                        <span class="icon">
+                            <ion-icon name="log-out-outline"></ion-icon>
+                        </span>
+                        <span class="title">Sign Out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- ========================= Main ==================== -->
+        <div class="main">
+            <div class="topbar">
+                <div class="toggle">
+                    <ion-icon name="menu-outline"></ion-icon>
+                                </div>
+
+                
+
+                <div class="user">
+                    <img src="assets/imgs/customer01.jpg" alt="">
+                </div>
+            </div>
+
+            <!-- ======================= Cards ================== -->
+            <div class="cardBox">
+                {% for status in top_statuses %}
+                    <div class="card">
+                        <div>
+                            <div class="numbers">{{ status.total }}</div>
+                            <div class="cardName">{{ status.display }}</div>
+                        </div>
+            
+                        <div class="iconBx">
+                            {% if status.status == "aguardando_aprovacao" %}
+                                <ion-icon name="hourglass-outline"></ion-icon>
+                            {% elif status.status == "documentacao_pendente" %}
+                                <ion-icon name="document-text-outline"></ion-icon>
+                            {% elif status.status == "aguardando_cancelamento_qv" %}
+                                <ion-icon name="alert-circle-outline"></ion-icon>
+                            {% elif status.status == "cliente_aprovado" %}
+                                <ion-icon name="checkmark-circle-outline"></ion-icon>
+                            {% elif status.status == "proposta_apresentada" %}
+                                <ion-icon name="clipboard-outline"></ion-icon>
+                            {% elif status.status == "visita_efetuada" %}
+                                <ion-icon name="walk-outline"></ion-icon>
+                            {% elif status.status == "fechamento_proposta" %}
+                                <ion-icon name="briefcase-outline"></ion-icon>
+                            {% elif status.status == "pagamento_tsd" %}
+                                <ion-icon name="cash-outline"></ion-icon>
+                            {% elif status.status == "conformidade" %}
+                                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                            {% elif status.status == "assinatura_minuta_caixa" %}
+                                <ion-icon name="create-outline"></ion-icon>
+                            {% elif status.status == "comissao_recebida" %}
+                                <ion-icon name="wallet-outline"></ion-icon>
+                            {% elif status.status == "concluido" %}
+                                <ion-icon name="flag-outline"></ion-icon>
+                            {% elif status.status == "reprovado" %}
+                                <ion-icon name="close-circle-outline"></ion-icon>
+                            {% else %}
+                                <ion-icon name="people-outline"></ion-icon>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+
+
+            <!-- ================ Order Details List ================= -->
+                <div class="details">
+                    <div class="recentOrders">
+                        <div class="cardHeader">
+                            <h2>Clientes Recentes</h2>                            
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Nome</td>
+                                    <td>CPF</td>
+                                    <td>Status</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cliente in clientes %}
+                                    <tr>
+                                        <td>{{ cliente.nome }}</td>
+                                        <td>{{ cliente.cpf }}</td>
+                                        <td><span class="status-btn {{ cliente.status }}">{{ cliente.get_status_display }}</span></td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                
+
+
+    </div>
+
+    <!-- =========== Scripts =========  -->
+    
+    <script src="{% static 'js/index.js' %}"></script>
+
+
+    <!-- ====== ionicons ======= -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
