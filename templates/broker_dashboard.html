@@ -1,0 +1,740 @@
+<style>
+   ::-webkit-scrollbar {
+   width: 20px;
+ }
+ 
+   ::-webkit-scrollbar-thumb {
+   background-color: #d6dee1;
+ }
+ 
+ ::-webkit-scrollbar-thumb {
+   background-color: #d6dee1;
+   border-radius: 20px;
+ }
+ 
+ ::-webkit-scrollbar-thumb {
+   background-color: #d6dee1;
+   border-radius: 20px;
+   border: 6px solid transparent;
+   background-clip: content-box;
+ }
+ 
+ ::-webkit-scrollbar-thumb:hover {
+   background-color: #a8bbbf;
+ }
+ </style>
+ <style>
+   .status-btn {
+   padding: 5px 10px;
+   border-radius: 5px;
+   color: white;
+   font-weight: bold;
+   text-align: center;
+   }
+   .reprovado {
+   background-color: #FF0000; /* cor vermelha para representar reprovado */
+   }
+   .aguardando_aprovacao {
+   background-color: #FFC107; /* cor amarela */
+   }
+   .documentacao_pendente {
+   background-color: #FF5722; /* cor laranja */
+   }
+   .aguardando_cancelamento_qv {
+   background-color: #FFEB3B; /* cor amarela clara */
+   }
+   .cliente_aprovado {
+   background-color: #4CAF50; /* cor verde */
+   }
+   .proposta_apresentada {
+   background-color: #2196F3; /* cor azul */
+   }
+   .visita_efetuada {
+   background-color: #9C27B0; /* cor roxa */
+   }
+   .fechamento_proposta {
+   background-color: #E91E63; /* cor rosa */
+   }
+   .pagamento_tsd {
+   background-color: #3F51B5; /* cor azul escuro */
+   }
+   .conformidade {
+   background-color: #009688; /* cor verde água */
+   }
+   .assinatura_minuta_caixa {
+   background-color: #CDDC39; /* cor verde-limão */
+   }
+   .comissao_recebida {
+   background-color: #8BC34A; /* cor verde claro */
+   }
+   .concluido {
+   background-color: #4CAF50; /* cor verde */
+   }
+</style>
+ <!DOCTYPE html>
+ <html lang="pt-br">
+    {% load static %}
+    {% if messages %}
+    <ul class="messages">
+       {% for message in messages %}
+       <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+       {% endfor %}
+    </ul>
+    {% endif %}   
+    <!--
+       =========================================================
+       * Argon Dashboard 2 - v2.0.4
+       =========================================================
+       
+       * Product Page: https://www.creative-tim.com/product/argon-dashboard
+       * Copyright 2022 Creative Tim (https://www.creative-tim.com)
+       * Licensed under MIT (https://www.creative-tim.com/license)
+       * Coded by Creative Tim
+       
+       =========================================================
+       
+       * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+       -->
+    <!DOCTYPE html>
+    <html lang="pt-br">
+       <head>
+          <meta charset="utf-8" />
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/ionicons/2.0.1/css/ionicons.min.css">
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+          <!-- Apple Touch Icon -->
+          <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+          <!-- Favicon -->
+          <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+          <title>
+             Dashboard 3 Brokers - By Flavio Kalleu
+          </title>
+          <!-- Fonts -->
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+          <!-- Nucleo Icons -->
+          <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-icons.css' %}">
+          <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+          <!-- Chart.js -->
+          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <!-- Font Awesome Icons -->
+          <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+          <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+          <!-- Argon Dashboard CSS -->
+          <link rel="stylesheet" type="text/css" href="{% static 'css/argon-dashboard.css' %}">
+          <!-- Tailwind CSS -->
+          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          <!-- Ionicons -->
+          <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+          <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+       </head>
+       <body class="g-sidenav-show bg-gray-100">
+          <div class="min-height-300 bg-primary position-absolute w-100"></div>
+          <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+             <div class="sidenav-header">
+                <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+                <!-- Logo -->
+                <a class="navbar-brand m-0" href="" target="_blank">
+                <img src="{% static 'img/logo-ct-dark.png' %}" class="navbar-brand-img h-100" alt="main_logo">
+                <span class="ms-1 font-weight-bold">3 Brokers</span>
+                </a>
+             </div>
+             <hr class="horizontal dark mt-0">
+             <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
+                <ul class="navbar-nav">
+                   <li class="nav-item {% if request.resolver_match.url_name == 'broker_dashboard' %}active{% endif %}">
+                     <a class="nav-link" href="{% url 'broker_dashboard' %}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                           <ion-icon name="analytics-outline" class="text-primary"></ion-icon>
+                        </div>
+                        <span class="nav-link-text ms-1">Inicio</span>
+                     </a>
+                  </li>
+                  <li class="nav-item {% if request.resolver_match.url_name == 'cliente-create' %}active{% endif %}">
+                     <a class="nav-link" href="{% url 'cliente-create' %}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                           <ion-icon name="person-add-outline" class="text-success"></ion-icon>
+                        </div>
+                        <span class="nav-link-text ms-1">Adicionar Cliente</span>
+                     </a>
+                  </li>
+                  <li class="nav-item {% if request.resolver_match.url_name == 'consulta_cpf' %}active{% endif %}">
+                     <a class="nav-link" href="{% url 'consulta_cpf' %}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                           <ion-icon name="search-outline" class="text-warning"></ion-icon>
+                        </div>
+                        <span class="nav-link-text ms-1">Consulta CPF</span>
+                     </a>
+                  </li>
+                  <li class="nav-item {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}">
+                     <a class="nav-link" href="{% url 'lista_clientes' %}">
+                        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                           <ion-icon name="people-outline" class="text-success"></ion-icon>
+                        </div>
+                        <span class="nav-link-text ms-1">Lista de Clientes</span>
+                     </a>
+                  </li>
+                  
+                </ul>
+             </div>
+          </aside>
+          <main class="main-content position-relative border-radius-lg ">
+             <!-- Navbar -->
+             <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+                <div class="container-fluid py-1 px-3">
+                   <nav aria-label="breadcrumb">         
+                   </nav>
+                   <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                      <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                         <div class="input-group">
+                         </div>
+                      </div>
+                      <ul class="navbar-nav  justify-content-end">
+                         <li class="nav-item d-flex align-items-center dropdown">
+                            <a href="javascript:;" class="nav-link text-white font-weight-bold px-0 dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user me-sm-1"></i>
+                            <span class="d-sm-inline d-none">{{ username }}</span>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="top: 0px !important;">
+                               <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
+                                  <ion-icon name="log-out-outline" class="text-danger me-2"></ion-icon>
+                                  Sair
+                               </a>
+                               <a class="dropdown-item d-flex align-items-center" href="{% url 'settings' %}">
+                                  <ion-icon name="settings-outline" class="text-danger me-2"></ion-icon>
+                                  Configurações
+                               </a>
+                            </div>
+                         </li>
+                         <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                               <div class="sidenav-toggler-inner">
+                                  <i class="sidenav-toggler-line bg-white"></i>
+                                  <i class="sidenav-toggler-line bg-white"></i>
+                                  <i class="sidenav-toggler-line bg-white"></i>
+                               </div>
+                            </a>
+                         </li>
+                         <li class="nav-item px-3 d-flex align-items-center">
+                            <a href="javascript:;" class="nav-link text-white p-0">
+                            <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+                            </a>
+                         </li>
+                      </ul>
+                   </div>
+                </div>
+             </nav>
+             <!-- End Navbar -->
+             <div class="container-fluid py-4">
+               <div class="row">
+                  <!-- Total de Processos -->
+                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                     <div class="card">
+                        <div class="card-body p-3">
+                           <div class="row">
+                              <div class="col-8">
+                                 <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total de Processos</p>
+                                    <h5 class="font-weight-bolder">{{ processos|length }}</h5>
+                                 </div>
+                              </div>
+                              <div class="col-4 text-end">
+                                 <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                    <i class="fas fa-clipboard-list text-lg opacity-10" aria-hidden="true"></i>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Processos em Andamento -->
+                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                     <div class="card">
+                        <div class="card-body p-3">
+                           <div class="row">
+                              <div class="col-8">
+                                 <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Processos em Andamento</p>
+                                    <h5 class="font-weight-bolder">{{ total_processos_em_andamento }}</h5>
+                                 </div>
+                              </div>
+                              <div class="col-4 text-end">
+                                 <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                    <i class="fas fa-sync-alt text-lg opacity-10" aria-hidden="true"></i>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Clientes Recentes -->
+                  <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                     <div class="card">
+                        <div class="card-body p-3">
+                           <div class="row">
+                              <div class="col-8">
+                                 <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Clientes Recentes</p>
+                                    <h5 class="font-weight-bolder">{{ total_clientes_recentes }}</h5>
+                                 </div>
+                              </div>
+                              <div class="col-4 text-end">
+                                 <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                    <i class="fas fa-user-plus text-lg opacity-10" aria-hidden="true"></i>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- Total de Clientes -->
+                  <div class="col-xl-3 col-sm-6">
+                     <div class="card">
+                        <div class="card-body p-3">
+                           <div class="row">
+                              <div class="col-8">
+                                 <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total de Clientes</p>
+                                    <h5 class="font-weight-bolder">{{ total_clientes }}</h5>
+                                 </div>
+                              </div>
+                              <div class="col-4 text-end">
+                                 <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                    <i class="fas fa-users text-lg opacity-10" aria-hidden="true"></i>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            
+                <div class="row mt-4">
+                   <div class="col-lg-8 mb-lg-0 mb-4">
+                      <div class="card z-index-2 h-100">
+                         <div class="card-header pb-0 pt-3 bg-transparent">
+                            <h6 class="text-capitalize">Clientes cadastrados</h6>
+                            <p class="text-sm mb-0">
+                               <i class="fa fa-arrow-up text-success"></i>
+                               <span class="font-weight-bold">{{ percent_change }}%</span>
+                            </p>
+                            <div class="filter">
+                               <label><input type="radio" name="timeframe" value="monthly" checked>Mensal</label>
+                               <label><input type="radio" name="timeframe" value="annual">Anual</label>
+                            </div>
+                         </div>
+                         <div class="card-body p-3">
+                            <div class="chart">
+                               <canvas id="line-chart-gradient" class="chart-canvas" height="300"></canvas>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+      <!-- Card do Status dos Processos -->
+      <div class="col-lg-4">
+         <div class="card">
+             <div class="card-header pb-0 p-3">
+                 <h6 class="mb-0">Status dos Processos</h6>
+             </div>
+             <div class="card-body p-3">
+               <div class="table-responsive">
+                  <table class="table align-items-center mb-0" id="processoTable">
+                     <thead>
+                        <tr>
+                           <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Nome do Cliente</th>
+                           <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Progresso</th>
+                           <!-- Nova coluna -->
+                        </tr>
+                     </thead>
+                     <tbody>
+                        {% for processo in processos %}
+                        <tr>
+                           <td class="px-4 py-2">
+                              <a href="#">
+                              {{ processo.cliente.nome }}
+                              </a>
+                           </td>
+                           <td class="px-4 py-2">
+                              <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ processo.progresso }}%;" aria-valuenow="{{ processo.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                           </td>
+                        </tr>
+                        {% endfor %}
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+             </div>
+             </div>
+ 
+               <div class="row mt-4">
+                   <!-- Formulário para Salvar Dados da Tabela -->
+                   <div class="col-lg-8 mb-lg-0 mb-4">
+                           <input type="hidden" name="form_type" value="vendas_corretor">
+                           <div class="card">
+                              <div class="table-responsive" id="conteudoLista">
+                                 <table class="table align-items-center mb-0" id="clienteTable">
+                                    <thead>
+                                       <tr>
+                                          <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Nome</th>
+                                          <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                                          <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Status</th>
+                                          <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Nome Corretor</th>
+                                          <th class="mb-0 text-s opacity-7"></th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       {% for cliente in clientes %}
+                                       {% if cliente.corretor == corretor %}
+                                       <tr>
+                                          <td>
+                                             <div class="d-flex px-2 py-1">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                   <h6 class="mb-0 text-xs">{{ cliente.nome }}</h6>
+                                                </div>
+                                             </div>
+                                          </td>
+                                          <td>
+                                             <p class="text-xs mb-0 text-s mb-0">{{ cliente.email }}</p>
+                                          </td>
+                                          <td class="align-middle text-center mb-0 text-xs" style="color: white !important;">
+                                             <button class="
+                                             px-4 py-2 rounded
+                                             {% if cliente.status == "aguardando_aprovacao" %}
+                                             bg-yellow-500
+                                             {% elif cliente.status == "documentacao_pendente" %}
+                                             bg-orange-500
+                                             {% elif cliente.status == "aguardando_cancelamento_qv" %}
+                                             bg-red-500
+                                             {% elif cliente.status == "cliente_aprovado" %}
+                                             bg-green-500
+                                             {% elif cliente.status == "proposta_apresentada" %}
+                                             bg-blue-500
+                                             {% elif cliente.status == "visita_efetuada" %}
+                                             bg-indigo-500
+                                             {% elif cliente.status == "fechamento_proposta" %}
+                                             bg-purple-500
+                                             {% elif cliente.status == "pagamento_tsd" %}
+                                             bg-pink-500
+                                             {% elif cliente.status == "conformidade" %}
+                                             bg-teal-500
+                                             {% elif cliente.status == "assinatura_minuta_caixa" %}
+                                             bg-gray-500
+                                             {% elif cliente.status == "comissao_recebida" %}
+                                             bg-lime-500
+                                             {% elif cliente.status == "concluido" %}
+                                             bg-emerald-500
+                                             {% elif cliente.status == "reprovado" %}
+                                             bg-rose-500
+                                             {% else %}
+                                             bg-gray-400
+                                             {% endif %}
+                                             ">
+                                             {{ cliente.get_status_display }}
+                                             </button>
+                                          </td>
+                                          <td class="align-middle text-center">
+                                             <span class="mb-0 text-s text-xs font-weight-bold">{{ cliente.corretor.first_name }} {{ cliente.corretor.last_name }}</span>
+                                          </td>
+                                       </tr>
+                                       {% endif %}
+                                       {% endfor %}
+                                    </tbody>
+                                 </table>
+                              </div>
+                              </div>
+                              </div>
+                              </div>
+                 </div>
+               </div>
+          <div class="fixed-plugin">
+             <div class="card shadow-lg">
+                <div class="card-header pb-0 pt-3 ">
+                   <div class="float-start">
+                      <h5 class="mt-3 mb-0">Argon Configurator</h5>
+                      <p>See our dashboard options.</p>
+                   </div>
+                   <div class="float-end mt-4">
+                      <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                      <i class="fa fa-close"></i>
+                      </button>
+                   </div>
+                   <!-- End Toggle Button -->
+                </div>
+                <hr class="horizontal dark my-1">
+                <div class="card-body pt-sm-3 pt-0 overflow-auto">
+                   <!-- Sidebar Backgrounds -->
+                   <div>
+                      <h6 class="mb-0">Sidebar Colors</h6>
+                   </div>
+                   <a href="javascript:void(0)" class="switch-trigger background-color">
+                      <div class="badge-colors my-2 text-start">
+                         <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+                         <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
+                         <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+                         <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+                         <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+                         <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
+                      </div>
+                   </a>
+                   <!-- Sidenav Type -->
+                   <div class="mt-3">
+                      <h6 class="mb-0">Sidenav Type</h6>
+                      <p class="text-sm">Choose between 2 different sidenav types.</p>
+                   </div>
+                   <div class="d-flex">
+                      <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
+                      <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
+                   </div>
+                   <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+                   <!-- Navbar Fixed -->
+                   <div class="d-flex my-3">
+                      <h6 class="mb-0">Navbar Fixed</h6>
+                      <div class="form-check form-switch ps-0 ms-auto my-auto">
+                         <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
+                      </div>
+                   </div>
+                   <hr class="horizontal dark my-sm-4">
+                   <div class="mt-2 mb-5 d-flex">
+                      <h6 class="mb-0">Light / Dark</h6>
+                      <div class="form-check form-switch ps-0 ms-auto my-auto">
+                         <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" checked onclick="darkMode(this)">
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+          </div>
+          <!--   Core JS Files   -->
+          <script src="{% static 'js/core/popper.min.js' %}"></script>
+          <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+          <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
+          <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
+          <script src="{% static 'js/plugins/chartjs.min.js' %}"></script> 
+          <!-- Bootstrap JS -->
+          <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var monthlyData = JSON.parse('{{ monthly_data_json|safe }}');
+                var annualData = JSON.parse('{{ annual_data_json|safe }}');
+            
+                var ctx1 = document.getElementById("line-chart-gradient").getContext("2d");
+                var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+            
+                gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+                gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+                gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+            
+                // Inicialização do gráfico com dados mensais
+                var chart = new Chart(ctx1, {
+                    type: "line",
+                    data: {
+                        labels: monthlyData.map(item => item.month + '/' + item.year),
+                        datasets: [{
+                            label: "Clientes Registrados",
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            borderColor: "#5e72e4",
+                            backgroundColor: gradientStroke1,
+                            fill: true,
+                            data: monthlyData.map(item => item.total),
+                            maxBarThickness: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        scales: {
+                            y: {
+                                grid: {
+                                    drawBorder: false,
+                                    display: true,
+                                    drawOnChartArea: true,
+                                    drawTicks: false,
+                                    borderDash: [5, 5]
+                                },
+                                ticks: {
+                                    stepSize: 1,
+                                    display: true,
+                                    padding: 10,
+                                    color: '#fbfbfb',
+                                    font: {
+                                        size: 11,
+                                        family: "Open Sans",
+                                        style: 'normal',
+                                        lineHeight: 2
+                                    },
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    drawBorder: false,
+                                    display: true,
+                                    drawOnChartArea: true,
+                                    drawTicks: false,
+                                    borderDash: [5, 5]
+                                },
+                                ticks: {
+                                    display: true,
+                                    color: '#ccc',
+                                    padding: 20,
+                                    font: {
+                                        size: 11,
+                                        family: "Open Sans",
+                                        style: 'normal',
+                                        lineHeight: 2
+                                    },
+                                }
+                            },
+                        },
+                    }
+                });
+            
+                // Função para atualizar o gráfico
+                function updateChart(timeframe) {
+                var newData = timeframe === 'annual' ? annualData : monthlyData;
+                var newLabels = newData.map(item => {
+                    return item.month ? item.month + '/' + item.year : item.year.toString();
+                });
+                var chartData = newData.map(item => item.total);
+            
+                chart.data.labels = newLabels;
+                chart.data.datasets[0].data = chartData;
+                chart.update();
+            }
+            
+                // Evento para detectar a mudança nos controles de filtro
+                document.querySelectorAll('input[name="timeframe"]').forEach(function(radio) {
+                    radio.addEventListener('change', function(event) {
+                        updateChart(event.target.value);
+                    });
+                });
+            
+            // Função para calcular e atualizar a mudança percentual
+            function updatePercentageChange(timeframe) {
+                var lastData, previousData, percentChange, changeText;
+            
+                if (timeframe === 'annual') {
+                    lastData = annualData[annualData.length - 1]; // Dados do último ano
+                    previousData = annualData.length > 1 ? annualData[annualData.length - 2] : null; // Dados do ano anterior
+                    changeText = 'mais em ' + lastData.year;
+                } else {
+                    lastData = monthlyData[monthlyData.length - 1]; // Dados do último mês
+                    previousData = monthlyData.length > 1 ? monthlyData[monthlyData.length - 2] : null; // Dados do mês anterior
+                    changeText = 'mais em ' + lastData.month + '/' + lastData.year;
+                }
+            
+                if (previousData) {
+                    percentChange = ((lastData.total - previousData.total) / previousData.total) * 100;
+                } else {
+                    percentChange = 0; // Ajuste conforme necessário
+                }
+            
+                // Atualizar o texto na página
+                document.querySelector('.text-sm.mb-0 span.font-weight-bold').innerText = percentChange.toFixed(2) + '% ' + changeText;
+            }
+            
+            // Evento para detectar a mudança nos controles de filtro
+            document.querySelectorAll('input[name="timeframe"]').forEach(function(radio) {
+                radio.addEventListener('change', function(event) {
+                    updateChart(event.target.value);
+                    updatePercentageChange(event.target.value);
+                });
+            });
+            
+            // Inicializar com os dados mensais por padrão
+            updatePercentageChange('monthly');
+            });
+         </script>  
+          <script>
+            var win = navigator.platform.indexOf('Win') > -1;
+            if (win && document.querySelector('#sidenav-scrollbar')) {
+              var options = {
+                damping: '0.5'
+              }
+              Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            }
+         </script>
+         <script>
+            var colors = [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+            '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+            ];
+            
+            document.addEventListener("DOMContentLoaded", function() {
+              darkMode(document.getElementById("dark-version"));
+            });
+         </script>
+         <!-- Github buttons -->
+         <script async defer src="https://buttons.github.io/buttons.js"></script>
+         <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->  
+         <script src="{% static 'js/argon-dashboard.min.js' %}"></script>
+         <script>
+            document.addEventListener('DOMContentLoaded', initializeChart);
+            
+            function initializeChart() {
+                const ctx = document.getElementById('statusPieChart').getContext('2d');
+                
+                const colors = [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+                    '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+                ];
+            
+                function createGradients(colors) {
+                    return colors.map(color => {
+                        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                        gradient.addColorStop(0, color + '55');  // meio transparente
+                        gradient.addColorStop(1, color);        // cor original
+                        return gradient;
+                    });
+                }
+            
+                function createChartData(labels, data, colors) {
+                    const backgroundColors = createGradients(colors);
+                    return {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: backgroundColors,
+                            borderColor: colors,
+                            borderWidth: 1
+                        }]
+                    };
+                }
+            
+                const statusLabels = [{% for status in all_statuses %}"{{ status.display }}",{% endfor %}];
+                const statusData = [{% for status in all_statuses %}{{ status.total }},{% endfor %}];
+            
+                const chartData = createChartData(statusLabels, statusData, colors);
+                
+                const statusPieChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                boxWidth: 10,
+                                fontSize: 10,
+                                fontColor: '#2c3e50'
+                            }
+                        }
+                    }
+                });
+            }                   
+                     </script>
+         </body>
+    </html>

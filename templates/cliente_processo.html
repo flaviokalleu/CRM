@@ -1,0 +1,117 @@
+<!-- cliente_processo.html -->
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block main_content %}
+<style>
+   .row {
+   margin-left: 30px;
+   }
+   .timeline {
+   position: relative;
+   padding-left: 60px;
+   list-style: none;
+   }
+   .timeline::before {
+   content: '';
+   position: absolute;
+   left: 29px;
+   top: 90px;
+   bottom: 0;
+   width: 2px;
+   background: #333;
+   z-index: 1;
+   margin-left: 100px;
+   }
+   .timeline-item {
+   position: relative;
+   margin-bottom: 35px;
+   }
+   .timeline-icon {
+   position: absolute;
+   left: 54px;
+   top: 120px;
+   transform: translateY(-50%);
+   width: 32px;
+   height: 32px;
+   border-radius: 50%;
+   background: #555;
+   border: 2px solid #777;
+   text-align: center;
+   line-height: 32px;
+   font-weight: bold;
+   color: #fff;
+   z-index: 2;
+   }
+   .timeline-item.completed .timeline-icon.completed{
+   background: #4CAF50;
+   border-color: #4CAF50;
+   }
+   .timeline-content {
+   position: relative;
+   padding-left: 15px;
+   top: 100px;
+   margin-left: 90px;
+   }
+   .timeline-content h4 {
+   font-size: 1em;
+   color: #fff;
+   display: inline-block;
+   vertical-align: middle;
+   }
+</style>
+<body class="g-sidenav-show bg-gray-100">
+   <div class="container-fluid">
+      <div class="row mt-4">
+         <!-- Coluna com os detalhes do processo -->
+         <div class="col-lg-7 mb-lg-0 mb-4">
+            <div class="card z-index-2 h-100">
+               <div class="card-body p-3">
+                  <h2 class="text-2xl font-bold mb-4">Detalhes do Processo</h2>
+                  <h3 class="text-xl font-bold mb-2">Cliente: {{ cliente.nome }}</h3>
+                  <h3 class="text-xl font-bold mb-2">Contato do Cliente:</h3>
+                  <p>Email: {{ cliente.email }}</p>
+                  <p>Telefone: {{ cliente.telefone }}</p>
+                  <h4 class="text-xl font-bold mb-2">Tipo de Processo: {{ tipo_processo.nome }}</h4>
+                  <!-- Formulário para atualizar as opções do processo -->
+                  <form method="post" action="{% url 'detalhes_do_processo' cliente_id=processo.cliente.id processo_id=processo.id %}">
+                     {% csrf_token %}
+                     <h4 class="text-lg font-bold mb-2 mt-4">Opções do Processo:</h4>
+                     {{ form.opcoes_processo }}
+                     {% if not request.user|is_corretor %}
+                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">
+                     Atualizar Tipos de Processos
+                     </button>
+                     {% endif %}
+                  </form>
+               </div>
+            </div>
+         </div>
+         <!-- Coluna para a linha do tempo -->
+         <div class="col-lg-5">
+            <div class="card z-index-2 h-100">
+               <div class="timeline">
+                  {% for campo in opcoes_disponiveis %}
+                  {% with campo_str=campo|stringformat:"s" %}
+                  {% if campo_str in opcoes_selecionadas_list %}                        
+                  <div class="timeline-item completed">
+                     <div class="timeline-icon completed">{{ forloop.counter }}</div>
+                     <div class="timeline-content">
+                        <h4>{{ campo }}</h4>
+                     </div>
+                  </div>
+                  {% else %}
+                  <div class="timeline-item">
+                     <div class="timeline-icon">{{ forloop.counter }}</div>
+                     <div class="timeline-content">
+                        <h4>{{ campo }}</h4>
+                     </div>
+                  </div>
+                  {% endif %}<br>
+                  {% endwith %}
+                  {% endfor %}
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   {% endblock %}

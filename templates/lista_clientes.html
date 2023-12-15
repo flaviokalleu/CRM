@@ -1,0 +1,726 @@
+<style>
+.badge-nota-count {
+    top: 50px;
+    right: 130px;
+    font-size: 0.6em;
+    color: #051139;
+    border-radius: 50%;
+    padding: 2px 5px;
+}
+/* Adiciona uma transição suavizada para as propriedades desejadas */
+.smooth-transition .kanban-board {
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+/* Quando a guia estiver ativa, adicione uma classe com uma transição para ela também */
+.smooth-transition .kanban-board.active {
+    transition: background-color 0.3s ease, border-radius 0.3s ease;
+}
+
+.tab-buttons {
+  margin-bottom: 20px;
+  border-radius: 10px; 
+}
+
+.tab-button {
+
+  background-color: #051139;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 15px;
+  transition: background-color 0.3s;
+  border-radius: 10px; 
+}
+
+.tab-button:hover {
+  background-color: #111c44;
+}
+
+.tab-button.active {
+  background-color: #111c44 !important;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block !important;
+}
+
+.kanban-container {
+    overflow-x: auto;
+}
+
+.kanban-board {
+    display: inline-block;
+    vertical-align: top;
+    overflow-y: auto;
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #f8f8f8;
+    padding: 1px;
+}
+
+.kanban-item {
+    border-radius: 6px;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: white !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: white;
+}
+
+#Kanban {
+    width: auto;
+    color: black;
+}
+
+</style>
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="pt-br">
+   {% load static %}
+   
+   <!DOCTYPE html>
+   <html lang="pt-br">
+      <head>
+         <title>
+            Lista de Clientes
+         </title>
+<!-- Kanban scripts -->
+<script src="{% static 'js/plugins/dragula.min.js' %}"></script>
+<link href="{% static 'css/jkanban.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/plugins/jkanban.min.js' %}"></script>
+      </head>
+      <body class="g-sidenav-show bg-gray-100">         
+         
+        
+         <!-- Tabela de Clientes -->
+         <main class="main-content position-relative border-radius-lg ">
+            <div class="container-fluid py-4">
+               <div class="flex justify-between items-center mb-6">
+                  <h2 class="h2">Clientes</h2>
+                  <input type="text" placeholder="Pesquisar cliente..." id="searchInput" class="input-group p-2 rounded-md w-64 focus:ring-2 focus:ring-indigo-600 focus:outline-none text-black">
+               </div>
+               <div class="tab-buttons">
+                <button id="botaoModoLista" class="tab-button active">Modo Lista</button>
+                <button id="botaoModoKanban" class="tab-button">Modo Kanban</button>
+              </div>
+               <div class="card">
+                <!-- Adicione este bloco acima da tabela existente -->
+                <div class="mb-3">
+                    <form method="GET" action="{% url 'lista_de_clientes' %}">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="statusFilter" class="form-label">Status:</label>
+                                <select class="form-control" id="statusFilter" name="status">
+                                    <option value="">Todos</option>
+                                    <option value="aguardando_aprovacao">Aguardando Aprovação</option>
+                                    <!-- Adicione outras opções de status conforme necessário -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="corretorFilter" class="form-label">Corretor:</label>
+                                <select class="form-control" id="corretorFilter" name="corretor">
+                                    <option value="">Todos</option>
+                                    {% for corretor in corretores %}
+                                        <option value="{{ corretor.id }}">{{ corretor.first_name }} {{ corretor.last_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dataFilter" class="form-label">Data:</label>
+                                <select class="form-control" id="dataFilter" name="data">
+                                    <option value="">Todos</option>
+                                    {% for mes in meses %}
+                                        <option value="{{ mes.data }}">{{ mes.nome_mes }} ({{ mes.qtd_clientes }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary mt-4">Aplicar Filtros</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                
+
+                  <div class="table-responsive" id="conteudoLista">
+                     <table class="table align-items-center mb-0" id="clienteTable">
+                        <thead>
+                           <tr>
+                              <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Nome</th>
+                              <th class="text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
+                              <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Status</th>
+                              <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Nome Corretor</th>
+                              {% if not request.user|is_corretor %}
+                              <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Detalhes</th>
+                              {% endif %}
+                              <th class="text-center text-uppercase mb-0 text-s text-xxs font-weight-bolder opacity-7">Notas</th>
+                              <th class="mb-0 text-s opacity-7"></th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           {% for cliente in clientes %}
+                           <tr>
+                              <td>
+                                 <div class="d-flex px-2 py-1">
+                                    <div class="d-flex flex-column justify-content-center">
+                                       <h6 class="mb-0 text-xs">{{ cliente.nome }}</h6>
+                                    </div>
+                                 </div>
+                              </td>
+                              <td>
+                                 <p class="text-xs mb-0 text-s mb-0">{{ cliente.email }}</p>
+                              </td>
+                              <td class="align-middle text-center mb-0 text-xs">
+                                <button class="px-4 py-2 rounded text-white
+                                    {% if cliente.status == "aguardando_aprovacao" %}
+                                        bg-yellow-500
+                                    {% elif cliente.status == "documentacao_pendente" %}
+                                        bg-orange-500
+                                    {% elif cliente.status == "aguardando_cancelamento_qv" %}
+                                        bg-red-500
+                                    {% elif cliente.status == "cliente_aprovado" %}
+                                        bg-green-500
+                                    {% elif cliente.status == "proposta_apresentada" %}
+                                        bg-blue-500
+                                    {% elif cliente.status == "visita_efetuada" %}
+                                        bg-indigo-500
+                                    {% elif cliente.status == "fechamento_proposta" %}
+                                        bg-purple-500
+                                    {% elif cliente.status == "pagamento_tsd" %}
+                                        bg-pink-500
+                                    {% elif cliente.status == "conformidade" %}
+                                        bg-teal-500
+                                    {% elif cliente.status == "assinatura_minuta_caixa" %}
+                                        bg-gray-500
+                                    {% elif cliente.status == "comissao_recebida" %}
+                                        bg-lime-500
+                                    {% elif cliente.status == "concluido" %}
+                                        bg-emerald-500
+                                    {% elif cliente.status == "reprovado" %}
+                                        bg-red-500
+                                    {% else %}
+                                        bg-gray-400
+                                    {% endif %}
+                                ">
+                                    {{ cliente.get_status_display }}
+                                </button>
+                            </td>
+                            
+                            
+                              <td class="align-middle text-center">
+                                 <span class="mb-0 text-s text-xs font-weight-bold">{{ cliente.corretor.first_name }} {{ cliente.corretor.last_name }}</span>
+                              </td>
+                              {% if not request.user|is_corretor %}
+                              <td class="align-middle text-center">
+                                 <button onclick="abrirModal({{ cliente.id }})"
+                                    class="mb-0 text-s font-weight-bold text-xs" data-bs-toggle="modal" data-bs-target="#clienteModal">
+                                 Ver detalhes
+                                 </button>
+                              </td>
+                              {%  endif %}
+                              <td class="align-middle text-center">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#notaModal-{{ cliente.id }}">
+                                    <span class="badge badge-nota-count" {% if cliente.tem_nota_nova %} style="background: red;" {% else %} style="background: gray;" {% endif %}>{{ cliente.notas.count }}</span>
+                                </a>
+                            </td>
+                            <td class="align-middle text-center">
+                                <form method="POST" action="{% url 'deletar_cliente' cliente.id %}" onsubmit="return confirm('Tem certeza que deseja deletar este cliente?')">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+                                </form>
+                            </td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+                  <!-- Conteúdo do Modo Kanban -->
+                  <div id="conteudoKanban" class="tab-content" style="display: none;">
+                        <div class="mt-3 kanban-container">
+                           <div class="py-2 min-vh-100 d-inline-flex">
+                                 <div id="Kanban">
+                                 </div>
+                              </div>
+                      </div>
+                  </div>
+            </div>
+            <!-- Modal de Detalhes do Cliente -->
+            <div class="modal fade" id="clienteModal" tabindex="-1" id="dark-version" role="dialog" aria-labelledby="clienteModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-dialog-centered" role="dialog" style="display: block;">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h5 class="modal-title" id="clienteModalLabel">Detalhes do Cliente</h5>
+                        
+                        <button type="button" onclick="fecharModal()" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                        
+                     </div>
+                     <div class="modal-body">
+                        <div class="row text-gray-300">
+                           <div class="col-md-6 mb-0 text-s"><strong>Nome:</strong> <span id="modalNome"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Email:</strong> <span id="modalEmail"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Telefone:</strong> <span id="modalTelefone"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>CPF:</strong> <span id="modalCPF"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Estado Civil:</strong> <span id="modalEstadoCivil"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Naturalidade:</strong> <span id="modalNaturalidade"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Profissão:</strong> <span id="modalProfissao"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Data de Admissão:</strong> <span id="modalDataAdmissao"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Data de Nascimento:</strong> <span id="modalDataNascimento"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Tipo de Renda:</strong> <span id="modalRendaTipo"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Possui Carteira 3 anos:</strong> <span id="modalPossuiCarteira"></span></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Número PIS:</strong> <span id="modalNumeroPIS"></span></div>
+                           <div class="w-100"></div>
+                           <div class="col-md-6 mb-0 text-s"><strong>Possui Dependente:</strong> <span id="modalPossuiDependente"></span></div>
+                           <div class="col-md-6 mb-0 text-s">
+                              <label for="modalStatusInput" class="mb-2 font-semibold text-s"><strong>Status:</strong></label>
+                              <select id="modalStatusInput" name="status" class="form-control form-control-l">
+                                 <option value="aguardando_aprovacao">Aguardando Aprovação</option>
+                                 <option value="documentacao_pendente">Documentação Pendente</option>
+                                 <option value="aguardando_cancelamento_qv">Aguardando Cancelamento QV</option>
+                                 <option value="cliente_aprovado">Cliente Aprovado</option>
+                                 <option value="proposta_apresentada">Proposta Apresentada</option>
+                                 <option value="visita_efetuada">Visita Efetuada</option>
+                                 <option value="fechamento_proposta">Fechamento Proposta</option>
+                                 <option value="pagamento_tsd">Pagamento TSD</option>
+                                 <option value="conformidade">Conformidade</option>
+                                 <option value="assinatura_minuta_caixa">Assinatura Minuta Caixa</option>
+                                 <option value="comissao_recebida">Comissão Recebida</option>
+                                 <option value="concluido">Concluído</option>
+                                 <option value="reprovado">Reprovado</option>
+                                 <option value="Não Deu continuidade">Não Deu continuidade</option>
+                              </select>
+                           </div>
+                        </div>
+                        <div class="mt-4">
+                            <!-- Área para adicionar notas -->
+                            <label for="notaInput" class="mb-2 font-semibold text-s"><strong>Adicionar Nota:</strong></label>
+                            <textarea id="notaInput" class="form-control form-control-l w-full border rounded-lg shadow-md" rows="5"></textarea>
+                        </div>                   
+                        <div class="mt-4">
+                            <!-- Formulário de upload de documento -->
+                            <label for="documentoInput" class="mb-2 font-semibold text-s"><strong>Adicionar Documento:</strong></label>
+                            <input type="file" id="documentoInput" class="form-control form-control-l w-full border rounded-lg shadow-md" multiple>
+                        </div>
+                        <div class="text-center mt-4">
+                           <a id="pdfLink" href="#" target="_blank" class="bg-indigo-600 hover:bg-indigo-700 text-gray-200 px-4 py-2 rounded">Abrir Documento em Nova Aba</a>
+                        </div>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" onclick="fecharModal()"class="btn bg-gradient-secondary" data-dismiss="modal">Fechar</button>
+                        <button onclick="salvarAlteracoes()" type="button" class="btn bg-gradient-primary">Salvar alterações</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {% for cliente in clientes %}
+            <!-- Modal para notas do cliente -->
+            <div class="modal fade" id="notaModal-{{ cliente.id }}" tabindex="-1" aria-labelledby="notaModalLabel-{{ cliente.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="notaModalLabel-{{ cliente.id }}">Notas para {{ cliente.nome }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group">
+                                {% for nota in cliente.notas %}
+                                    <li class="list-group-item">{{ nota.data_criacao|date:"d/m/Y H:i" }} - {{ nota.texto }}</li>
+                                    <button class="btn btn-danger btn-sm" onclick="deletarNota({{ nota.id }}, '{{ cliente.id }}')">Excluir</button>
+                                {% empty %}
+                                    <li class="list-group-item">Nenhuma nota encontrada.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+         </main> 
+         <script>
+            var win = navigator.platform.indexOf('Win') > -1;
+            if (win && document.querySelector('#sidenav-scrollbar')) {
+                var options = {
+                damping: '0.5'
+                }
+                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            }
+         </script>
+         <script>      
+            var clientesData = JSON.parse('{{ clientes_json|safe }}');  
+            let currentClienteId;
+            
+            function abrirModal(clienteId) {
+               currentClienteId = clienteId;
+               var clienteIdNumerico = Number(clienteId);
+               currentClienteId = clienteIdNumerico;
+                console.log("Função abrirModal chamada. ID do cliente:", clienteId);
+            
+                const cliente = clientesData.find(c => c.id === clienteIdNumerico);
+                if (cliente) {
+                // Preenchendo todos os detalhes
+                console.log(cliente)
+                document.getElementById('modalNome').textContent = cliente.nome || "N/A";
+                document.getElementById('modalEmail').textContent = cliente.email || "N/A";
+                document.getElementById('modalCPF').textContent = cliente.cpf || "N/A";
+                document.getElementById('modalTelefone').textContent = cliente.telefone || "N/A";
+                document.getElementById('modalEstadoCivil').textContent = cliente.estado_civil || "N/A";
+                document.getElementById('modalNaturalidade').textContent = cliente.naturalidade || "N/A";
+                document.getElementById('modalProfissao').textContent = cliente.profissao || "N/A";
+                document.getElementById('modalDataAdmissao').textContent = cliente.data_admissao || "N/A";
+                document.getElementById('modalDataNascimento').textContent = cliente.data_nascimento || "N/A";
+                document.getElementById('modalRendaTipo').textContent = cliente.renda_tipo || "N/A";
+                document.getElementById('modalPossuiCarteira').textContent = cliente.possui_carteira_mais_tres_anos ? "Sim" : "Não";
+                document.getElementById('modalNumeroPIS').textContent = cliente.numero_pis || "N/A";
+                document.getElementById('modalPossuiDependente').textContent = cliente.possui_dependente ? "Sim" : "Não";
+                
+                let pdfPath = `/media/documentos/${cliente.nome}-${cliente.cpf}/${cliente.nome}-${cliente.cpf}_documentos.pdf?${new Date().getTime()}`;
+                document.getElementById('pdfLink').href = pdfPath;
+            
+                // Mostrar o modal
+                document.getElementById('clienteModal').classList.remove('hidden');
+                
+            }
+            
+            }
+            function fecharModal() {
+                $('#clienteModal').modal('hide')
+                
+            }
+            
+            function salvarAlteracoes() {
+                let novoStatus = document.getElementById('modalStatusInput').value;
+                let nota = document.getElementById("notaInput").value;
+                let documentos = document.getElementById("documentoInput").files;
+                let formData = new FormData();
+
+                formData.append('novo_status', novoStatus);
+                formData.append('nota', nota);
+                for (let i = 0; i < documentos.length; i++) {
+                    formData.append('documentos', documentos[i]);
+                }
+
+                // Verifique os dados do FormData
+                console.log("Status:", formData.get('novo_status'));
+                console.log("Nota:", formData.get('nota'));
+                console.log("Documentos:", formData.getAll('documentos'));
+
+                // Chama a função para enviar os dados
+                enviarDadosCliente(formData)
+                    .then(() => {
+                        console.log('Documento enviado com sucesso');
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert(`Erro: ${error.message}`);
+                    });
+                    
+            }
+
+            function enviarDadosCliente(formData) {
+                return fetch(`/atualizar-cliente/${currentClienteId}/`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao salvar as alterações.');
+                    }
+                    if (response.ok) {
+                        sendNotification();
+                      }
+                    return response.json();
+                });
+            }
+
+            function atualizarStatusCliente(novoStatus) {
+                return fetch('/atualizar-status-cliente/', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        'cliente_id': currentClienteId,
+                        'novo_status': novoStatus
+                    }),
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao atualizar o status.');
+                    }
+                    return response.json();
+                });
+            }
+
+            function adicionarNota(nota, clienteId) {
+                if (!nota.trim()) {
+                    return Promise.reject(new Error("Nota vazia não pode ser enviada."));
+                }
+
+                return fetch('/adicionar-nota-cliente/', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        'cliente_id': clienteId,
+                        'texto': nota
+                    }),
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao enviar a nota.');
+                    }
+                    return response.json();
+                });
+            }
+
+            function deletarNota(notaId) {
+                if (confirm('Tem certeza que deseja deletar esta nota?')) {
+                    fetch(`/deletar-nota-cliente/${notaId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Nota deletada com sucesso.');
+                            window.location.reload();
+                        } else {
+                            alert('Erro ao deletar a nota.');
+                        }
+                    });
+                }
+            }
+
+            // Função para enviar notificação
+            function sendNotification() {
+            return fetch('/send-notification/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ 'cliente_id': currentClienteId })
+            })
+            .then(response => {
+                if (response && response.ok) {
+                    return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(`Erro na requisição: ${response.status} ${response.statusText}\n${text}`);
+                    });
+                }
+            });
+        }
+
+// Kanban
+document.addEventListener('DOMContentLoaded', function() {
+    var kanbanBoards = [
+        { id: 'aguardando_aprovacao', title: 'Aguardando Aprovação', class: 'bg-primary', item: [] },
+        { id: 'documentacao_pendente', title: 'Documentação Pendente', class: 'bg-warning', item: [] },
+        { id: 'cliente_aprovado', title: 'Cliente Aprovado', class: 'bg-success', item: [] },
+        { id: 'proposta_apresentada', title: 'Proposta Apresentada', class: 'bg-info', item: [] },
+        { id: 'visita_efetuada', title: 'Visita Efetuada', class: 'bg-info', item: [] },
+        { id: 'fechamento_proposta', title: 'Fechamento Proposta', class: 'bg-secondary', item: [] },
+        { id: 'pagamento_tsd', title: 'Pagamento TSD', class: 'bg-dark', item: [] },
+        { id: 'conformidade', title: 'Conformidade', class: 'bg-danger', item: [] },
+        { id: 'assinatura_minuta_caixa', title: 'Assinatura Minuta Caixa', class: 'bg-light', item: [] },
+        { id: 'comissao_recebida', title: 'Comissão Recebida', class: 'bg-success', item: [] },
+        { id: 'concluido', title: 'Concluído', class: 'bg-success', item: [] },
+        { id: 'reprovado', title: 'Reprovado', class: 'bg-danger', item: [] }
+    ];
+    
+    // Preenchimento dos Quadros com os Itens (Clientes)
+var corretorLogadoId = '{{ user_id }}';
+
+clientesData.forEach(function (cliente) {
+    var corretorName = 'N/A';
+    if (cliente.corretor && cliente.corretor.first_name && cliente.corretor.last_name) {
+        corretorName = `${cliente.corretor.first_name} ${cliente.corretor.last_name}`;
+    }
+
+    if (cliente.corretor && cliente.corretor.id && cliente.corretor.id.toString() === corretorLogadoId) {
+        var statusCliente = cliente.status;
+        var board = kanbanBoards.find(b => b.id === statusCliente);
+
+        if (board) {
+            console.log('Cliente:', cliente);
+
+            board.item.push({
+                id: cliente.id,
+                title: `
+                    <div data-nome-cliente="${cliente.nome}" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 0.9em; font-weight: bold;">${cliente.nome}</div>
+                        <div style="font-size: 0.8em; align-self: flex-start;">Corretor: ${corretorName}</div>
+                        <div style="align-self: flex-end; display: flex; align-items: center; gap: 10px;">
+                            <a onclick='event.stopPropagation()' href="#" data-bs-toggle="modal" data-bs-target="#notaModal-${cliente.id}">
+                                <ion-icon name="clipboard" style="color: ${cliente.tem_nota_nova ? 'red' : 'black'}; font-size: 16px;"></ion-icon>
+                            </a>
+                            <a onclick='event.stopPropagation()' href='/media/documentos/${cliente.nome}-${cliente.cpf}/${cliente.nome}-${cliente.cpf}_documentos.pdf?${new Date().getTime()}' style="text-decoration: none !important;" target='_blank'>
+                                <ion-icon name="document" style="font-size: 16px; color: black;"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+                `
+            });
+        }
+    } else {
+        var statusCliente = cliente.status;
+        var board = kanbanBoards.find(b => b.id === statusCliente);
+
+        if (board) {
+            console.log('Cliente:', cliente);
+
+            board.item.push({
+                id: cliente.id,
+                title: `
+                    <div data-nome-cliente="${cliente.nome}" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="font-size: 0.9em; font-weight: bold;">${cliente.nome}</div>
+                        <div style="font-size: 0.8em; align-self: flex-start;">Corretor: ${corretorName}</div>
+                        <div style="align-self: flex-end; display: flex; align-items: center; gap: 10px;">
+                            <a onclick='event.stopPropagation()' href="#" data-bs-toggle="modal" data-bs-target="#notaModal-${cliente.id}">
+                                <ion-icon name="clipboard" style="color: ${cliente.tem_nota_nova ? 'red' : 'black'}; font-size: 16px;"></ion-icon>
+                            </a>
+                            <a onclick='event.stopPropagation()' href='/media/documentos/${cliente.nome}-${cliente.cpf}/${cliente.nome}-${cliente.cpf}_documentos.pdf?${new Date().getTime()}' style="text-decoration: none !important;" target='_blank'>
+                                <ion-icon name="document" style="font-size: 16px; color: black;"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+                `
+            });
+        }
+    }
+});
+
+        
+    
+
+    // Inicialização do jKanban com os quadros preenchidos
+    var kanban = new jKanban({
+        element: '#Kanban',
+        gutter: '6px',
+        widthBoard: '305px',
+        dragItems: true,
+        dragBoards: false,
+        boards: kanbanBoards,
+        click: function(el) {
+            var clienteId = el.getAttribute('data-eid');
+            abrirModal(clienteId)
+            var myModal = new bootstrap.Modal(document.getElementById('clienteModal'), {
+                keyboard: false
+            });
+            myModal.show();
+        },
+        dropEl: function(el, target, source, sibling) {
+            var clienteId = el.getAttribute('data-eid');
+            var novoStatus = target.parentNode.getAttribute('data-id');
+    
+            // Verifica se ambos clienteId e novoStatus são definidos
+            if (clienteId && novoStatus) {
+                // Chama a função para atualizar o status do cliente no servidor
+                atualizarStatusClienteKanban(clienteId, novoStatus);
+            } else {
+                console.error("Erro ao obter clienteId ou novoStatus");
+            }
+        },
+    });
+    
+    // Adiciona uma classe com uma transição suavizada
+    var kanbanElement = document.querySelector('#Kanban');
+    kanbanElement.classList.add('smooth-transition');
+    
+
+    function atualizarStatusClienteKanban(clienteId, novoStatus) {
+        fetch('/atualizar-status-cliente/', {
+            method: 'POST',
+            body: new URLSearchParams({
+                'cliente_id': clienteId,
+                'novo_status': novoStatus
+            }),
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar o status.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Status atualizado com sucesso:', data);
+            // Aqui você pode adicionar qualquer lógica adicional necessária após a atualização
+            
+        })
+        .catch(error => {
+            console.error('Erro na atualização do status do cliente:', error);
+        });
+    }
+});
+</script>
+<!-- Modo Kaban/Lista -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var botaoModoLista = document.getElementById('botaoModoLista');
+        var botaoModoKanban = document.getElementById('botaoModoKanban');
+        var conteudoLista = document.getElementById('conteudoLista');
+        var conteudoKanban = document.getElementById('conteudoKanban');
+
+        botaoModoLista.addEventListener('click', function() {
+            conteudoLista.style.display = 'block';
+            conteudoKanban.style.display = 'none';
+            botaoModoLista.classList.add('active');
+            botaoModoKanban.classList.remove('active');
+        });
+
+        botaoModoKanban.addEventListener('click', function() {
+            conteudoLista.style.display = 'none';
+            conteudoKanban.style.display = 'block';
+            botaoModoKanban.classList.add('active');
+            botaoModoLista.classList.remove('active');
+        });
+    });
+</script>
+<!-- Pesquisa -->
+<script>
+document.getElementById('searchInput').addEventListener('keyup', function() {
+    var searchValue = this.value.toLowerCase();
+
+    // Pesquisa na Tabela
+    var tableRows = document.querySelectorAll('#clienteTable tbody tr');
+    tableRows.forEach(function(row) {
+        var nomeCliente = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+        row.style.display = nomeCliente.includes(searchValue) ? '' : 'none';
+    });
+
+    // Pesquisa no Kanban
+    var kanbanItems = document.querySelectorAll('.kanban-board .kanban-item');
+    kanbanItems.forEach(function(item) {
+        var nomeCliente = item.getAttribute('data-nome-cliente').toLowerCase();
+        item.style.display = nomeCliente.includes(searchValue) ? '' : 'none';
+    });
+});
+
+</script>
+      </body>
+   </html>
+   {% endblock %}

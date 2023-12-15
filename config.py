@@ -1,0 +1,3 @@
+CONVENIO = '000703230'
+USERNAME = 'Matheus'
+PASSWORD = 'Sucesso2'

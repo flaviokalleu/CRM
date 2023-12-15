@@ -1,0 +1,785 @@
+<style>
+    .modal-dialog .modal-content {
+      background-color: #051139 !important;
+      color: white !important; 
+    }
+  
+    ::-webkit-scrollbar {
+    width: 20px;
+  }
+  
+    ::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: #d6dee1;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #a8bbbf;
+  }
+  
+  .page-link {
+     background-color: transparent !important;
+  }
+  </style>
+  <!DOCTYPE html>
+  <html lang="pt-br">
+     {% load static %}
+     {% if messages %}
+     <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+     </ul>
+     {% endif %}   
+     <!--
+        =========================================================
+        * Argon Dashboard 2 - v2.0.4
+        =========================================================
+        
+        * Product Page: https://www.creative-tim.com/product/argon-dashboard
+        * Copyright 2022 Creative Tim (https://www.creative-tim.com)
+        * Licensed under MIT (https://www.creative-tim.com/license)
+        * Coded by Creative Tim
+        
+        =========================================================
+        
+        * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+        -->
+     <!DOCTYPE html>
+     <html lang="pt-br">
+        <head>
+           <meta charset="utf-8" />
+           <link rel="stylesheet" href="https://cdn.jsdelivr.net/ionicons/2.0.1/css/ionicons.min.css">
+           <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+           <!-- Apple Touch Icon -->
+           <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+           <!-- Favicon -->
+           <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+           <title>
+              Dashboard 3 Brokers - By Flavio Kalleu
+           </title>
+           <!-- Fonts -->
+           <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+           <!-- Nucleo Icons -->
+           <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-icons.css' %}">
+           <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+           <!-- Chart.js -->
+           <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+           <!-- Font Awesome Icons -->
+           <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+           <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+           <!-- Argon Dashboard CSS -->
+           <link rel="stylesheet" type="text/css" href="{% static 'css/argon-dashboard.css' %}">
+           <!-- Tailwind CSS -->
+           <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+           <!-- Ionicons -->
+           <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+           <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+        </head>
+        <body class="g-sidenav-show bg-gray-100">
+           <div class="min-height-300 bg-primary position-absolute w-100"></div>
+           <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 " id="sidenav-main">
+              <div class="sidenav-header">
+                 <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+                 <!-- Logo -->
+                 <a class="navbar-brand m-0" href="https://demos.creative-tim.com/argon-dashboard/pages/dashboard.html" target="_blank">
+                 <img src="{% static 'img/logo-ct-dark.png' %}" class="navbar-brand-img h-100" alt="main_logo">
+                 <span class="ms-1 font-weight-bold">3 Brokers</span>
+                 </a>
+              </div>
+              <hr class="horizontal dark mt-0">
+              <div class="collapse navbar-collapse lg:w-auto w-full" id="sidenav-collapse-main">
+                <ul class="navbar-nav">
+                   <!-- Novos itens adicionados com ícones -->
+                   <li class="nav-item">
+                      <a class="nav-link active" href="{% url 'dashboard_redirect' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="analytics-outline" class="text-primary"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Inicio</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'cadastro_corretores' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="person-add-outline" class="text-primary"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Cadastro de Corretores</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'cadastro_correspondentes' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="person-add-outline" class="text-info"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Cadastro de Correspondentes</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'cliente-create' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="person-add-outline" class="text-success"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Criar Cliente</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'lista_proprietarios' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="home-outline" class="text-info"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Proprietarios</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'consulta_cpf' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="search-outline" class="text-warning"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Consulta CPF</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'lista_clientes' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="people-outline" class="text-success"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Lista de Clientes</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                     <a class="nav-link" href="{% url 'financas_view' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                             <ion-icon name="cash-outline" class="text-info"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Finanças</span>
+                     </a>
+                 </li>
+                 
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'lista_processos' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="document-text-outline" class="text-info"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Processos</span>
+                      </a>
+                   </li>
+                   <li class="nav-item">
+                      <a class="nav-link" href="{% url 'lista_corretores' %}">
+                         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                            <ion-icon name="person-add-outline" class="text-info"></ion-icon>
+                         </div>
+                         <span class="nav-link-text ms-1">Lista de Corretores</span>
+                      </a>
+                   </li>
+                </ul>
+             </div>
+           </aside>
+           <main class="main-content position-relative border-radius-lg ">
+              <!-- Navbar -->
+              <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl " id="navbarBlur" data-scroll="false">
+                 <div class="container-fluid">
+                    <nav aria-label="breadcrumb">         
+                    </nav>
+                    <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+                       <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                          <div class="input-group">
+                          </div>
+                       </div>
+                       <ul class="navbar-nav  justify-content-end">
+                          <li class="nav-item d-flex align-items-center dropdown">
+                             <a href="javascript:;" class="nav-link text-white font-weight-bold px-0 dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                             <i class="fa fa-user me-sm-1"></i>
+                             <span class="d-sm-inline d-none">{{ username }}</span>
+                             </a>
+                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="top: 0px !important;">
+                                <a class="dropdown-item d-flex align-items-center" href="{% url 'logout' %}">
+                                   <ion-icon name="log-out-outline" class="text-danger me-2"></ion-icon>
+                                   Sair
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="{% url 'settings' %}">
+                                   <ion-icon name="settings-outline" class="text-danger me-2"></ion-icon>
+                                   Configurações
+                                </a>
+                             </div>
+                          </li>
+                          <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                             <a href="javascript:;" class="nav-link text-white p-0" id="iconNavbarSidenav">
+                                <div class="sidenav-toggler-inner">
+                                   <i class="sidenav-toggler-line bg-white"></i>
+                                   <i class="sidenav-toggler-line bg-white"></i>
+                                   <i class="sidenav-toggler-line bg-white"></i>
+                                </div>
+                             </a>
+                          </li>
+                          <li class="nav-item px-3 d-flex align-items-center">
+                             <a href="javascript:;" class="nav-link text-white p-0">
+                             <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+                             </a>
+                          </li>
+                       </ul>
+                    </div>
+                 </div>
+              </nav>
+              <!-- End Navbar -->
+              <div class="container-fluid mx-auto">
+                <div class="row justify-content-center">
+                    
+                   
+                   <!-- Total de Clientes -->
+                   <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                       <div class="card">
+                           <div class="card-body p-3">
+                               <div class="row">
+                                   <div class="col-8">
+                                       <div class="numbers">
+                                           <p class="text-sm mb-0 text-uppercase font-weight-bold">Receita</p>
+                                           <h5 class="font-weight-bolder">{{ total_receita_geral }}</h5>
+                                       </div>
+                                   </div>
+                                   <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                           <i class="fas fa-user text-lg opacity-10" aria-hidden="true"></i>
+                                       </div>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   
+                                    <!-- Total de Proprietários -->
+                    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Despesa</p>
+                                            <h5 class="font-weight-bolder">{{ total_despesa_geral }}</h5>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                            <i class="fas fa-dollar-sign text-lg opacity-10" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Total de Clientes -->
+                    <div class="col-xl-3 col-sm-6">
+                       <div class="card">
+                          <div class="card-body p-3">
+                             <div class="row">
+                                <div class="col-8">
+                                   <div class="numbers">
+                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total</p>
+                                    <h5 class="font-weight-bolder">{{ total_geral }}</h5>
+                                   </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                        <i class="fas fa-chart-pie text-lg opacity-10" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+                 <div class="row mt-4">
+                    
+                       <div class="card z-index-2 h-100">
+                          <div class="card-header pb-0 pt-3 bg-transparent">
+                             <h6 class="text-capitalize">Saldo Mensal</h6>
+                             <p class="text-sm mb-0">
+                                <i class="fa fa-arrow-up text-success"></i>
+                                <span class="font-weight-bold">{{ percent_change }}%</span>
+                             </p>
+                             <div class="filter">
+                                <label><input type="radio" name="timeframe" value="monthly" checked>Mensal</label>
+                                <label><input type="radio" name="timeframe" value="annual">Anual</label>
+                             </div>
+                          </div>
+                          <div class="card-body p-3">
+                             <div class="chart">
+                                <canvas id="line-chart-gradient" class="chart-canvas" height="300"></canvas>
+                             </div>
+                          </div>
+                       </div>
+                    
+                </div>
+                
+                    
+                 
+                    
+                    
+                    
+                    <!-- Modal para adicionar transação -->
+                    <div class="modal fade" id="addTransactionModal" tabindex="-1" role="dialog" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addTransactionModalLabel">Adicionar Transação</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Formulário para adicionar transação -->
+                                    <form method="post" action="{% url 'financas_view' %}">
+                                        {% csrf_token %}                                    
+                                        <!-- Tipo -->
+                                      
+                                        <select class="form-select mb-2" name="tipo" class="form-control mb-2">
+                                            
+                                            <option value="">---------</option>
+
+                                            <option value="DESPESA">Despesa</option>
+
+                                            <option value="RECEITA">Receita</option>
+                                        </select>
+
+
+                                        <input name="valor" type="number" class="form-control mb-2" placeholder="Valor">
+                                        <input name="description" type="text" class="form-control mb-2" placeholder="Descrição">               
+                                    
+                                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                            Salvar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+  
+  <div class="row mt-4">
+                        <!-- Formulário para Salvar Dados da Tabela -->
+                        
+                            <div class="card">
+                                <h6 class="mb-0 text-center">Transações Financeiras</h6>
+                                <div class="card-header pb-0 p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <form method="get" action="{% url 'financas_view' %}" class="d-flex align-items-center">
+                                            <div class="form-group mb-0">
+                                                <label for="search_description" class="sr-only">Descrição</label>
+                                                <input type="text" class="form-control" id="search_description" name="search_description" value="{{ request.GET.search_description }}" placeholder="Pesquisar por descrição">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary ml-2">
+                                                <i class="fas fa-search"></i> <!-- Ícone de pesquisa do Font Awesome -->
+                                            </button>
+                                        </form>
+                                        <button type="button" data-toggle="modal" data-target="#addTransactionModal" class="btn btn-primary ml-auto">Adicionar</button>
+                                    </div>
+                                    
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table align-items-center" id="financialTransactionsTable">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-uppercase mb-0 text-s text-center text-xxs font-weight-bolder opacity-7">Descrição</th>
+                                                <th class="text-uppercase mb-0 text-s text-center text-xxs font-weight-bolder opacity-7">Valor</th>
+                                                <th class="text-uppercase mb-0 text-s text-center text-xxs font-weight-bolder opacity-7">Tipo</th>
+                                                <th class="text-uppercase mb-0 text-s text-center text-xxs font-weight-bolder opacity-7">Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for transacao in transacoes %}
+                                            <tr>
+                                                <td class="align-middle text-center mb-0 text-s">{{ transacao.description }}</td>
+                                                <td class="align-middle text-center mb-0 text-s">{{ transacao.valor }}</td>
+                                                <td class="align-middle text-center mb-0 text-s">{{ transacao.tipo }}</td>
+                                                <td class="align-middle text-center mb-0 text-s">
+                                                    <!-- Botão para abrir o modal de exclusão -->
+                                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteTransactionModal{{ transacao.id }}">
+                                                        Excluir
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <!-- Modal de exclusão para cada transação -->
+                                            <div class="modal fade" id="deleteTransactionModal{{ transacao.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteTransactionModal{{ transacao.id }}Label" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="deleteTransactionModal{{ transacao.id }}Label">Excluir Transação</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Tem certeza de que deseja excluir esta transação?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                                            <a href="{% url 'delete_transaction' transacao.id %}" class="btn btn-danger">Excluir</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination justify-content-center">
+                                        {% if transacoes.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ transacoes.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                        {% for num in transacoes.paginator.page_range %}
+                                        {% if transacoes.number == num %}
+                                        <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% else %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% if transacoes.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ transacoes.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        
+                    </div>
+                
+                   
+                
+           <div class="fixed-plugin">
+              <div class="card shadow-lg">
+                 <div class="card-header pb-0 pt-3 ">
+                    <div class="float-start">
+                       <h5 class="mt-3 mb-0">Argon Configurator</h5>
+                       <p>See our dashboard options.</p>
+                    </div>
+                    <div class="float-end mt-4">
+                       <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+                       <i class="fa fa-close"></i>
+                       </button>
+                    </div>
+                    <!-- End Toggle Button -->
+                 </div>
+                 <hr class="horizontal dark my-1">
+                 <div class="card-body pt-sm-3 pt-0 overflow-auto">
+                    <!-- Sidebar Backgrounds -->
+                    <div>
+                       <h6 class="mb-0">Sidebar Colors</h6>
+                    </div>
+                    <a href="javascript:void(0)" class="switch-trigger background-color">
+                       <div class="badge-colors my-2 text-start">
+                          <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
+                          <span class="badge filter bg-gradient-dark" data-color="dark" onclick="sidebarColor(this)"></span>
+                          <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+                          <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+                          <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+                          <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
+                       </div>
+                    </a>
+                    <!-- Sidenav Type -->
+                    <div class="mt-3">
+                       <h6 class="mb-0">Sidenav Type</h6>
+                       <p class="text-sm">Choose between 2 different sidenav types.</p>
+                    </div>
+                    <div class="d-flex">
+                       <button class="btn bg-gradient-primary w-100 px-3 mb-2 active me-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
+                       <button class="btn bg-gradient-primary w-100 px-3 mb-2" data-class="bg-default" onclick="sidebarType(this)">Dark</button>
+                    </div>
+                    <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+                    <!-- Navbar Fixed -->
+                    <div class="d-flex my-3">
+                       <h6 class="mb-0">Navbar Fixed</h6>
+                       <div class="form-check form-switch ps-0 ms-auto my-auto">
+                          <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)">
+                       </div>
+                    </div>
+                    <hr class="horizontal dark my-sm-4">
+                    <div class="mt-2 mb-5 d-flex">
+                       <h6 class="mb-0">Light / Dark</h6>
+                       <div class="form-check form-switch ps-0 ms-auto my-auto">
+                          <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" checked onclick="darkMode(this)">
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+           </div>
+           <!--   Core JS Files   -->
+           <script src="{% static 'js/core/popper.min.js' %}"></script>
+           <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+           <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
+           <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
+           <script src="{% static 'js/plugins/chartjs.min.js' %}"></script> 
+           <!-- Bootstrap JS -->
+           <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+           <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+           <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                
+                  var monthlyData = JSON.parse('{{ monthly_data_json|safe }}');
+                  var annualData = JSON.parse('{{ annual_data_json|safe }}');
+                  console.log(monthlyData)
+              
+                  var ctx1 = document.getElementById("line-chart-gradient").getContext("2d");
+                  var gradientStroke1 = ctx1.createLinearGradient(0, 230, 0, 50);
+              
+                  gradientStroke1.addColorStop(1, 'rgba(94, 114, 228, 0.2)');
+                  gradientStroke1.addColorStop(0.2, 'rgba(94, 114, 228, 0.0)');
+                  gradientStroke1.addColorStop(0, 'rgba(94, 114, 228, 0)');
+              
+                  // Inicialização do gráfico com dados mensais
+                  var chart = new Chart(ctx1, {
+                      type: "line",
+                      data: {
+                          labels: monthlyData.map(item => item.month + '/' + item.year),
+                          datasets: [{
+                              label: "Saldo Mensal",
+                              tension: 0.4,
+                              borderWidth: 3,
+                              pointRadius: 0,
+                              borderColor: "#5e72e4",
+                              backgroundColor: gradientStroke1,
+                              fill: true,
+                              data: monthlyData.map(item => item.total),
+                              maxBarThickness: 6
+                          }]
+                      },
+                      options: {
+                          responsive: true,
+                          maintainAspectRatio: false,
+                          plugins: {
+                              legend: {
+                                  display: false,
+                              }
+                          },
+                          interaction: {
+                              intersect: false,
+                              mode: 'index',
+                          },
+                          scales: {
+                              y: {
+                                  grid: {
+                                      drawBorder: false,
+                                      display: true,
+                                      drawOnChartArea: true,
+                                      drawTicks: false,
+                                      borderDash: [5, 5]
+                                  },
+                                  ticks: {
+                                      stepSize: 1,
+                                      display: true,
+                                      padding: 10,
+                                      color: '#fbfbfb',
+                                      font: {
+                                          size: 11,
+                                          family: "Open Sans",
+                                          style: 'normal',
+                                          lineHeight: 2
+                                      },
+                                  }
+                              },
+                              x: {
+                                  grid: {
+                                      drawBorder: false,
+                                      display: true,
+                                      drawOnChartArea: true,
+                                      drawTicks: false,
+                                      borderDash: [5, 5]
+                                  },
+                                  ticks: {
+                                      display: true,
+                                      color: '#ccc',
+                                      padding: 20,
+                                      font: {
+                                          size: 11,
+                                          family: "Open Sans",
+                                          style: 'normal',
+                                          lineHeight: 2
+                                      },
+                                  }
+                              },
+                          },
+                      }
+                  });
+              
+                  // Função para atualizar o gráfico
+                  function updateChart(timeframe) {
+                  var newData = timeframe === 'annual' ? annualData : monthlyData;
+                  var newLabels = newData.map(item => {
+                      return item.month ? item.month + '/' + item.year : item.year.toString();
+                  });
+                  var chartData = newData.map(item => item.total);
+              
+                  chart.data.labels = newLabels;
+                  chart.data.datasets[0].data = chartData;
+                  chart.update();
+              }
+              
+                  // Evento para detectar a mudança nos controles de filtro
+                  document.querySelectorAll('input[name="timeframe"]').forEach(function(radio) {
+                      radio.addEventListener('change', function(event) {
+                          updateChart(event.target.value);
+                      });
+                  });
+              
+              // Função para calcular e atualizar a mudança percentual
+              function updatePercentageChange(timeframe) {
+                  var lastData, previousData, percentChange, changeText;
+              
+                  if (timeframe === 'annual') {
+                      lastData = annualData[annualData.length - 1]; // Dados do último ano
+                      previousData = annualData.length > 1 ? annualData[annualData.length - 2] : null; // Dados do ano anterior
+                      changeText = 'mais em ' + lastData.year;
+                  } else {
+                      lastData = monthlyData[monthlyData.length - 1]; // Dados do último mês
+                      previousData = monthlyData.length > 1 ? monthlyData[monthlyData.length - 2] : null; // Dados do mês anterior
+                      changeText = 'mais em ' + lastData.month + '/' + lastData.year;
+                  }
+              
+                  if (previousData) {
+                      percentChange = ((lastData.total - previousData.total) / previousData.total) * 100;
+                  } else {
+                      percentChange = 0; // Ajuste conforme necessário
+                  }
+              
+                  // Atualizar o texto na página
+                  document.querySelector('.text-sm.mb-0 span.font-weight-bold').innerText = percentChange.toFixed(2) + '% ' + changeText;
+              }
+              
+              // Evento para detectar a mudança nos controles de filtro
+              document.querySelectorAll('input[name="timeframe"]').forEach(function(radio) {
+                  radio.addEventListener('change', function(event) {
+                      updateChart(event.target.value);
+                      updatePercentageChange(event.target.value);
+                  });
+              });
+              
+              // Inicializar com os dados mensais por padrão
+              updatePercentageChange('monthly');
+              });
+           </script>   
+           <script>
+              var win = navigator.platform.indexOf('Win') > -1;
+              if (win && document.querySelector('#sidenav-scrollbar')) {
+                var options = {
+                  damping: '0.5'
+                }
+                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+              }
+           </script>
+           <script>
+              var colors = [
+              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+              '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+              ];
+              
+              document.addEventListener("DOMContentLoaded", function() {
+                darkMode(document.getElementById("dark-version"));
+              });
+           </script>
+           <!-- Github buttons -->
+           <script async defer src="https://buttons.github.io/buttons.js"></script>
+           <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->  
+           <script src="{% static 'js/argon-dashboard.min.js' %}"></script>
+           <script>
+  document.addEventListener('DOMContentLoaded', initializeChart);
+  
+  function initializeChart() {
+      const ctx = document.getElementById('statusPieChart').getContext('2d');
+      
+      const colors = [
+          '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+          '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+      ];
+  
+      function createGradients(colors) {
+          return colors.map(color => {
+              const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, color + '55');  // meio transparente
+              gradient.addColorStop(1, color);        // cor original
+              return gradient;
+          });
+      }
+  
+      function createChartData(labels, data, colors) {
+          const backgroundColors = createGradients(colors);
+          return {
+              labels: labels,
+              datasets: [{
+                  data: data,
+                  backgroundColor: backgroundColors,
+                  borderColor: colors,
+                  borderWidth: 1
+              }]
+          };
+      }
+  
+      const statusLabels = [{% for status in all_statuses %}"{{ status.display }}",{% endfor %}];
+      const statusData = [{% for status in all_statuses %}{{ status.total }},{% endfor %}];
+  
+      const chartData = createChartData(statusLabels, statusData, colors);
+      
+      const statusPieChart = new Chart(ctx, {
+          type: 'pie',
+          data: chartData,
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              legend: {
+                  display: true,
+                  position: 'right',
+                  labels: {
+                      boxWidth: 10,
+                      fontSize: 10,
+                      fontColor: '#2c3e50'
+                  }
+              }
+          }
+      });
+  }                   
+           </script>
+           <script>
+  document.getElementById('addRow').addEventListener('click', function() {
+      $('#novaVendaModal').modal('show');
+  });
+  
+  function fecharModal() {
+     document.getElementById('novaVendaModal').classList.add('hidden');
+  }
+  
+  function calcularValorFaltante() {
+      var modal = document.getElementById('novaVendaModal');
+      var valorTotalPagar = modal.querySelector('input[name="valor_total_pagar"]').value;
+      var valorPago = modal.querySelector('input[name="valor_pago"]').value;
+      var valorFaltante = modal.querySelector('input[name="valor_faltante"]');
+  
+      valorTotalPagar = parseFloat(valorTotalPagar) || 0;
+      valorPago = parseFloat(valorPago) || 0;
+  
+      valorFaltante.value = valorTotalPagar - valorPago;
+  }
+  
+           </script>
+        </body>
+     </html>

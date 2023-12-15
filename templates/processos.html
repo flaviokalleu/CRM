@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block main_content %}
+<div class="container mx-auto py-4">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold mb-2 md:mb-0">Lista de Processos</h2>
+        <div class="flex items-center">
+            <!-- Botão Adicionar Processo -->
+            {% if not request.user|is_corretor %}
+            <button onclick="abrirModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer mr-4">
+                Adicionar Processo
+            </button>
+            {% endif %}      
+            <!-- Campo de pesquisa -->
+            <input type="text" placeholder="Pesquisar processo..." id="searchInput" class="md:ml-4 input-group p-2 rounded-md w-full md:w-64 focus:ring-2 focus:ring-indigo-600 focus:outline-none text-black">
+        </div>
+    </div>
+    <div class="card overflow-x-auto">
+        <div class="table-responsive">
+            <table class="table w-full mb-0" id="processoTable">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Nome do Cliente</th>
+                        <th class="px-4 py-2">Tipo de Processo</th>
+                        <th class="px-4 py-2">Responsável</th>
+                        <th class="px-4 py-2">Progresso</th>
+                        <!-- Nova coluna -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for processo in processos %}
+                    <tr>
+                        <td class="px-4 py-2">
+                            <a href="{% url 'detalhes_do_processo' cliente_id=processo.cliente.id processo_id=processo.id %}">
+                                {{ processo.cliente.nome }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-2">{{ processo.get_tipo_display }}</td>
+                        <td class="px-4 py-2">{{ processo.responsavel.first_name }} {{ processo.responsavel.last_name }}</td>
+                        <td class="px-4 py-2">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: {{ processo.progresso }}%;" aria-valuenow="{{ processo.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal de Criação de Processos -->
+<div class="modal fade" id="processoModal" tabindex="-1" id="dark-version" role="dialog" aria-labelledby="processoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="dialog" style="display: block;">
+        <div class="modal-content">
+            <div class="p-4">
+                <form action="{% url 'add_processo' %}" method="post">
+                    {% csrf_token %}
+                  <div class="mb-4">
+                     <label for="cliente" class="block text-sm font-bold mb-2">Nome do Cliente:</label>
+                     <select name="cliente" id="cliente" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        {% for cliente in clientes %}
+                        <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                        {% endfor %}
+                     </select>
+                  </div>
+                  <div class="mb-4">
+                     <label for="proprietario" class="block text-sm font-bold mb-2">Proprietário:</label>
+                     <select name="proprietario" id="proprietario" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        {% for proprietario in proprietarios %}
+                        <option value="{{ proprietario.id }}">{{ proprietario.nome }}</option>
+                        {% endfor %}
+                     </select>
+                  </div>
+                  <div class="mb-4">
+                     <label for="tipo" class="block text-sm font-bold mb-2">Tipo de Processo:</label>
+                     <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tipo" name="tipo">
+                        <option value="usado">Usado</option>
+                        <option value="novo">Novo</option>
+                        <option value="agio">Ágio</option>
+                     </select>
+                  </div>
+                  <div class="mb-4">
+                     <label for="tags" class="block text-sm font-bold mb-2">Tags:</label>
+                     <input type="text" onkeyup="filtrarProcessos()" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="tags" name="tags">
+                  </div>
+                  <div class="mb-4">
+                     <label for="responsavel" class="block text-sm font-bold mb-2">Responsável:</label>
+                     <select name="responsavel" id="responsavel" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        {% for corretor in corretores %}
+                        <option value="{{ corretor.id }}">{{ corretor.first_name }} {{ corretor.last_name }}</option>
+                        {% endfor %}
+                     </select>
+                  </div>
+                      <button type="submit" class="btn bg-gradient-primary">Salvar</button>
+            </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   function abrirModal() {
+       var modal = new bootstrap.Modal(document.getElementById('processoModal'));
+       modal.show();
+   }
+   
+   function fecharModal() {
+       var modal = new bootstrap.Modal(document.getElementById('processoModal'));
+       modal.hide();
+   }
+</script>
+<!-- Pesquisa -->
+<script>
+   document.getElementById('searchInput').addEventListener('keyup', function() {
+       var searchValue = this.value.toLowerCase();
+       var tableRows = document.querySelectorAll('#processoTable tbody tr');
+   
+       tableRows.forEach(function(row) {
+           var nomeCliente = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+           if (nomeCliente.includes(searchValue)) {
+               row.style.display = '';
+           } else {
+               row.style.display = 'none';
+           }
+       });
+   });
+</script>
+{% endblock %}

@@ -1,0 +1,195 @@
+<style>
+    .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 0%);
+   }
+    .form-container .header {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+    .form-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3c3f9f;
+    }
+    .form-container p {
+    color: #888;
+    }
+    .form-group {
+    margin-bottom: 16px;
+    color: black; 
+    }
+    .form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
+    }
+    .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    color: black;
+    }
+    .form-group input:focus {
+    border-color: #a5acff;
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+    .error-message {
+    color: red;
+    font-size: 12px;
+    }
+    .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #3c3f9f;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    }
+    .submit-btn:hover {
+    background-color: #292c7f;
+    }
+    .submit-btn:focus {
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+    .input-text-black input {
+    color: black; 
+    }
+    .text-center {
+      text-align: center;
+  }
+  /* Add this to your existing styles */
+.form-error-highlight {
+    border: 2px solid red; /* Red border for highlighted fields */
+    background-color: #FFB6C1; /* Light pink background for better visibility */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px; /* Add some spacing between the input and error message */
+}
+
+ </style>
+ {% extends 'base.html' %}
+ {% block main_content %}
+ <!DOCTYPE html>
+ <html lang="pt-br">
+    <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>Criar Cliente</title>
+       {% load static %}
+       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body class="g-sidenav-show bg-gray-100">
+       <div class="form-container">
+         <div id="error-container" class="text-center"></div>
+          <div class="header">
+             <h2>Criar Cliente</h2>
+             <p>Insira as informações do cliente abaixo.</p>
+          </div>
+          <form method="post" enctype="multipart/form-data">
+             {% csrf_token %}
+             {% for field in form %}
+             <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.label == 'Corretor' %}
+                <select class="form-select mb-2" name="{{ field.name }}" id="corretor-select" class="form-control mb-2">
+                  <option value="">Selecione um Corretor</option>
+                  {% for corretor in corretores %}
+                  <option value="{{ corretor.pk }}">{{ corretor.first_name }} {{ corretor.last_name }}</option>
+                  {% endfor %}
+              </select>                
+                {% else %}
+                {{ field }}
+                {% endif %}
+                {% if field.errors %}
+    <p class="error-message">{{ field.errors.0 }}</p>
+    <input type="{{ field.field.widget.input_type }}"
+           name="{{ field.name }}"
+           class="form-error-highlight"
+           value="{{ field.value|default:'' }}"
+           {% if field.field.required %}required{% endif %}>
+{% endif %}
+
+             </div>
+             {% endfor %}
+             <button type="submit" class="submit-btn">Salvar</button>
+          </form>
+       </div>
+       <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             var corretorSelect = document.getElementById('corretor-select');
+             var form = document.querySelector('form');
+             var errorContainer = document.getElementById('error-container');
+     
+             corretorSelect.addEventListener('change', function() {
+                 var selectedCorretorId = corretorSelect.value;
+                 console.log('ID do Corretor Selecionado:', selectedCorretorId);
+                 // You can use selectedCorretorId as needed
+             });
+     
+             form.addEventListener('submit', function(event) {
+                 var isValid = true;
+     
+                 // Clear previous error messages and field highlights
+                 errorContainer.innerHTML = '';
+                 form.querySelectorAll('.error-field').forEach(function(field) {
+                     field.classList.remove('error-field');
+                 });
+     
+                 // Check for form field errors
+                 var errorMessages = document.querySelectorAll('.error-message');
+                 errorMessages.forEach(function(errorMessage, index) {
+                     if (errorMessage.textContent.trim() !== '') {
+                         isValid = false;
+     
+                         // Display specific error message at the top of the form
+                         var fieldName = form[index].name;
+                         errorContainer.innerHTML += `<p class="error-message" style="color: red;">Erro no campo ${fieldName}: ${errorMessage.textContent}</p>`;
+     
+                         // Highlight the specific form field with the error
+                         var errorField = form[index];
+                         errorField.classList.add('error-field');
+                     }
+                 });
+     
+                 if (!isValid) {
+                     event.preventDefault(); // Prevent form submission if there are errors
+                 }
+             });
+     
+             // Add an event listener to clear the global error messages and field highlights when the user interacts with the form
+             form.addEventListener('input', function() {
+                 errorContainer.innerHTML = '';
+                 form.querySelectorAll('.error-field').forEach(function(field) {
+                     field.classList.remove('error-field');
+                 });
+             });
+         });
+     </script>
+     
+     
+     
+       <script src="{% static 'js/core/popper.min.js' %}"></script>
+       <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+       <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
+       <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
+       <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>  
+       <script src="{% static 'js/argon-dashboard.min.js' %}"></script>
+    </body>
+ </html>
+ {% endblock %}

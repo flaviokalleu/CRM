@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+   {% load widget_tweaks %}
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Login</title>
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/ionicons/2.0.1/css/ionicons.min.css">
+      <style>
+         body {
+         background: linear-gradient(to right, #6A00FF, #7B1FA2);
+         }
+         .input-focus:focus {
+         border-color: #6A00FF;
+         box-shadow: 0 0 0 3px rgba(106, 0, 255, 0.2);
+         }
+         .btn-hover:hover {
+         background-color: #6A00FF;
+         }
+      </style>
+   </head>
+   <body class="h-screen flex justify-center items-center">
+      <div class="bg-white p-8 rounded-lg shadow-md max-w-md">
+         <!-- Section Right - Form -->
+         <div class="space-y-6">
+            <h2 class="text-2xl font-bold mb-4 text-center text-purple-600">Bem-vindo ao CRM <span class="font-bold text-indigo-800">3BROKERS</span></h2>
+            <p class="mb-4 text-gray-600 text-center">Bem-vindo, corretor! Por favor, digite seu usuário e senha.</p>
+            <form action="/login/" method="post" class="space-y-6">
+               {% csrf_token %}
+               <div class="mb-4">
+                  <label for="username" class="block text-gray-700">Usuário:</label>
+                  <input type="text" id="username" name="username" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-purple-500 input-focus">
+               </div>
+               <div class="mb-6">
+                  <label for="password" class="block text-gray-700">Senha:</label>
+                  <input type="password" id="password" name="password" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-purple-500 input-focus">
+               </div>
+               <div class="flex justify-center">
+                  <button type="submit" class="bg-purple-600 btn-hover hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50 transition duration-200">Entrar</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <script>
+         // Fade-in effect on load
+         window.addEventListener('DOMContentLoaded', (event) => {
+             let loginCard = document.querySelector('.bg-white');
+             setTimeout(() => {
+                 loginCard.style.transition = 'opacity 1.5s ease-in, transform 1s ease';
+                 loginCard.style.opacity = '1';
+                 loginCard.style.transform = 'scale(1)';
+             }, 500);
+         });
+      </script>
+   </body>
+</html>

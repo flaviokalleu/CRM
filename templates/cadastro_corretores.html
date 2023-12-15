@@ -1,0 +1,157 @@
+<style>
+  .form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .form-container .header {
+  text-align: center;
+  margin-bottom: 20px;
+  }
+  .form-container h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3c3f9f;
+  }
+  .form-container p {
+  color: #888;
+  }
+  .form-group {
+  margin-bottom: 16px;
+  }
+  .form-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+  }
+  .form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  color: black;
+  }
+  .form-group input:focus {
+  border-color: #a5acff;
+  box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+  }
+  .error-message {
+  color: red;
+  font-size: 12px;
+  }
+  .submit-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #3c3f9f;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  }
+  .submit-btn:hover {
+  background-color: #292c7f;
+  }
+  .submit-btn:focus {
+  box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+  }
+</style>
+{% extends 'base.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  {% load static %}
+  {% if messages %}
+  <ul class="messages">
+     {% for message in messages %}
+     <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+     {% endfor %}
+  </ul>
+  {% endif %}   
+  <!DOCTYPE html>
+  <html lang="pt-br">
+     <head>
+        <title>
+           Cadastro de Corretores
+        </title>
+     </head>
+     <body class="g-sidenav-show bg-gray-100">
+        <div class="form-container">
+           <div class="header">
+              <h2>Cadastrar Corretor</h2>
+              <p>Insira suas informações abaixo obs: não adicione o "9" no numero de telefone.</p>
+           </div>
+           <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+              <div class="form-group">
+                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                 {% if field.name == "telefone" %}
+                 <div class="flex border rounded-md">
+                    <span class="p-2 bg-gray-100 border-r">+55</span>
+                    <input 
+                       id="{{ field.id_for_label }}" 
+                       type="text" 
+                       name="{{ field.name }}" 
+                       class="flex-grow p-2 text-black"
+                       placeholder="DDD Número"
+                       >            
+                 </div>
+                 {% elif field.name == "password" %}
+                 <input id="{{ field.id_for_label }}" type="password" name="{{ field.name }}" autocomplete="off" class="text-black">
+                 {% else %}
+                 <input id="{{ field.id_for_label }}" type="text" name="{{ field.name }}" autocomplete="off" class="text-black">
+                 {% endif %}
+                 {% if field.errors %}
+                 <p class="error-message">{{ field.errors.0 }}</p>
+                 {% endif %}
+              </div>
+              {% endfor %}
+              <div>
+                 <button type="submit" class="submit-btn">Enviar</button>
+              </div>
+           </form>
+        </div>
+        <!--   Core JS Files   -->
+        <script src="{% static 'js/core/popper.min.js' %}"></script>
+        <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
+        <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>  
+       
+        <script>
+           var colors = [
+           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+           '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+           ];
+           
+           document.addEventListener("DOMContentLoaded", function() {
+               darkMode(document.getElementById("dark-version"));
+           });
+        </script>
+        <script>
+           var colors = [
+           '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FFCD56', 
+           '#C9CBCF', '#24A19C', '#A3E048', '#EC9F05', '#EB4034', '#4A90E2'
+           ];
+           
+           document.addEventListener("DOMContentLoaded", function() {
+             darkMode(document.getElementById("dark-version"));
+           });
+           
+        </script>
+        <!-- Github buttons -->
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->  
+        <script src="{% static 'js/argon-dashboard.min.js' %}"></script>
+     </body>
+  </html>
+  {% endblock %}
