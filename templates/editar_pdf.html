@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <h2 class="text-2xl font-bold mb-4">Editar PDF - Cliente {{ cliente_id }}</h2>
+
+    <div class="grid grid-cols-3 gap-4">
+        {% for pagina_numero in pagina_numeros %}
+            <div class="pdf-page relative p-4">
+                <iframe
+                    src="{% url 'visualizar_pagina_pdf' cliente_id=cliente_id pagina_numero=pagina_numero tipo_documento=tipo_documento %}" 
+                    width="100%"
+                    height="500" 
+                ></iframe>
+                <form method="post" action="{% url 'deletar_pagina_pdf' cliente_id=cliente_id pagina_numero=pagina_numero tipo_documento=tipo_documento %}" class="absolute bottom-0 left-0 p-4 w-full">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded w-full">Deletar</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+    <script>
+        // Função para carregar o visualizador de PDF
+        function loadPDFViewer(pdfUrl, elementId) {
+            // Carrega o PDF usando pdf.js
+            pdfjsLib.getDocument(pdfUrl).then(function (pdf) {
+                // Renderiza a primeira página do PDF
+                pdf.getPage(1).then(function (page) {
+                    var canvas = document.createElement('canvas');
+                    var ctx = canvas.getContext('2d');
+                    var viewport = page.getViewport({ scale: 1.5 });
+
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    var renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport,
+                    };
+
+                    page.render(renderContext).promise.then(function () {
+                        document.getElementById(elementId).appendChild(canvas);
+                    });
+                });
+            });
+        }
+
+        
+
+    </script>
+{% endblock %}

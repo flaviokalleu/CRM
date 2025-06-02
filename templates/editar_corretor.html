@@ -1,0 +1,76 @@
+<!-- Seu arquivo atualizar_corretor.html -->
+{% extends 'base.html' %}
+
+{% block main_content %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.getElementById('formAtualizarCorretor');
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao salvar as alterações.');
+                }
+                window.location.reload();  // Recarrega a página após o sucesso
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert(`Erro: ${error.message}`);
+            });
+        });
+    });
+</script>
+
+<div class="container mx-auto p-8  shadow-md rounded-lg">
+    <h2 class="text-2xl font-bold mb-4">Atualizar Corretor</h2>
+    
+    <form method="post" action="{% url 'atualizar_corretor' corretor.id %}" class="space-y-4">
+        {% csrf_token %}
+        <div class="flex flex-col">
+            <label for="id_username" class="text-white">Username:</label>
+            <input type="text" name="username" id="id_username" value="{{ corretor.username }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_email" class="text-white">Email:</label>
+            <input type="email" name="email" id="id_email" value="{{ corretor.email }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_first_name" class="text-white">First Name:</label>
+            <input type="text" name="first_name" id="id_first_name" value="{{ corretor.first_name }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_last_name" class="text-white">Last Name:</label>
+            <input type="text" name="last_name" id="id_last_name" value="{{ corretor.last_name }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_CRECI" class="text-white">CRECI:</label>
+            <input type="text" name="CRECI" id="id_CRECI" value="{{ corretor.CRECI }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_Endereco" class="text-white">Endereço:</label>
+            <input type="text" name="Endereco" id="id_Endereco" value="{{ corretor.Endereco }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_PIX_Conta" class="text-white">PIX Conta:</label>
+            <input type="text" name="PIX_Conta" id="id_PIX_Conta" value="{{ corretor.PIX_Conta }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <div class="flex flex-col">
+            <label for="id_telefone" class="text-white">Telefone:</label>
+            <input type="text" name="telefone" id="id_telefone" value="{{ corretor.telefone }}" class="p-2 border rounded-md" style="color: black;">
+        </div>
+        <!-- Adicione mais campos conforme necessário -->
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Salvar Alterações</button>
+    </form>
+</div>
+{% endblock %}

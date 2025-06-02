@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <div class="flex justify-center items-center h-screen">
+        <div class="w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl p-6 bg-white shadow-md rounded-md text-black">
+            <p class="text-3xl font-bold mb-6 text-center text-black">Editar Cliente</p>
+            <form method="post" class="space-y-6">
+
+                {% csrf_token %}
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_nome" class="form-label">Nome:</label>
+                        {{ form.nome }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_email" class="form-label">Email:</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_telefone" class="form-label">Telefone:</label>
+                        {{ form.telefone }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_corretor" class="form-label">Corretor:</label>
+                        {{ form.corretor }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_cpf" class="form-label">CPF:</label>
+                        {{ form.cpf }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_valor_da_renda" class="form-label">Valor da Renda:</label>
+                        {{ form.valor_da_renda }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_estado_civil" class="form-label">Estado Civil:</label>
+                        {{ form.estado_civil }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_status" class="form-label">Status:</label>
+                        {{ form.status }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_naturalidade" class="form-label">Naturalidade:</label>
+                        {{ form.naturalidade }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_profissao" class="form-label">Profissão:</label>
+                        {{ form.profissao }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_data_admissao" class="form-label">Data de Admissão:</label>
+                        {{ form.data_admissao }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_data_nascimento" class="form-label">Data de Nascimento:</label>
+                        {{ form.data_nascimento }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_renda_tipo" class="form-label">Tipo de Renda:</label>
+                        {{ form.renda_tipo }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_possui_carteira_mais_tres_anos" class="form-label">Carteira por mais de três anos:</label>
+                        {{ form.possui_carteira_mais_tres_anos }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_numero_pis" class="form-label">Número PIS:</label>
+                        {{ form.numero_pis }}
+                    </div>
+
+                    <div class="form-field-wrapper border rounded">
+                        <label for="id_possui_dependente" class="form-label">Possui Dependente:</label>
+                        {{ form.possui_dependente }}
+                    </div>
+                </div>
+
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md w-full mt-6">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

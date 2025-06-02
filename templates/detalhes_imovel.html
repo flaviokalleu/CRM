@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parnassa Imobiliária - Detalhes do Imóvel">
+    <title>Parnassa Imobiliária | Detalhes do Imóvel</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            light: '#D4AF37',
+                            DEFAULT: '#CFB53B',
+                            dark: '#996515'
+                        },
+                        elegant: {
+                            black: '#121212',
+                            dark: '#1E1E1E',
+                            gray: '#2D2D2D'
+                        }
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'cinzel': ['Cinzel', 'serif'],
+                        'lora': ['Lora', 'serif']
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-500px 0' },
+                            '100%': { backgroundPosition: '500px 0' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        sparkle: {
+                            '0%': { left: '-100%' },
+                            '100%': { left: '200%' }
+                        },
+                        pulseIcon: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.1)' }
+                        }
+                    },
+                    animation: {
+                        shimmer: 'shimmer 3s infinite linear',
+                        fadeIn: 'fadeIn 0.8s ease-out forwards',
+                        sparkle: 'sparkle 2s infinite',
+                        pulseIcon: 'pulseIcon 1.5s infinite'
+                    },
+                    borderRadius: {
+                        'lg': '12px',
+                        'xl': '16px',
+                        'sm': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            letter-spacing: 0.5px;
+            background: #121212;
+        }
+        .btn-rounded {
+            border-radius: 12px;
+            transition: all 0.4s ease;
+        }
+        .card-rounded {
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+        .input-rounded {
+            border-radius: 8px;
+        }
+        .luxury-text {
+            font-family: 'Cinzel', serif;
+            text-shadow: 1px 1px 6px rgba(212, 175, 55, 0.5);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .luxury-text:hover {
+            transform: scale(1.05);
+            color: #D4AF37;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #D4AF37, #E5C100, #CFB53B, #D4AF37);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: shimmer 3s infinite linear;
+        }
+        .sparkle-text {
+            position: relative;
+            overflow: hidden;
+        }
+        .sparkle-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.6), transparent);
+            transform: skewX(-25deg);
+            animation: sparkle 2s infinite;
+        }
+        .gold-sparkle {
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .gold-sparkle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.4), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+        }
+        .bg-elegant-gray {
+            border-radius: 16px;
+            transition: transform 0.4s ease;
+        }
+        .group:hover .bg-elegant-gray {
+            transform: translateY(-10px);
+        }
+        .group:hover .luxury-text {
+            color: #D4AF37;
+        }
+        .group:hover img {
+            filter: brightness(1.1);
+        }
+        .gold-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(212, 175, 55, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .group:hover .gold-overlay {
+            opacity: 1;
+        }
+        input, button {
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        .fade-in-up {
+            animation: fadeIn 1s ease-out;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        .modal-content {
+            margin: 5% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+            background-color: #1E1E1E;
+            border-radius: 16px;
+            position: relative;
+        }
+        .close {
+            color: #D4AF37;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #E5C100;
+        }
+        .image-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-elegant-black text-white font-lora">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-20 transition-all duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'img/logos/logo.png' %}" class="h-8" alt="Parnassa Logo">
+                    <div class="text-gold-light font-playfair text-2xl font-bold gold-sparkle sparkle-text">PARNASSA</div>
+                </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'index' %}" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+                <a href="{% url 'allimoveis' %}" class="text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+                <a href="#" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+                <a href="https://wa.me/5561995734984" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="border border-gold-light text-gold-light px-5 py-2 hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Dashboard</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="border border-gold-light text-gold-light px-5 py-2 hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+                {% endif %}
+            </div>
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-elegant-dark py-4 px-4 md:hidden">
+            <a href="{% url 'index' %}" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+            <a href="{% url 'allimoveis' %}" class="block text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+            <a href="#" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+            <a href="https://wa.me/5561995734984" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'login' %}" class="block border border-gold-light text-gold-light px-4 py-2 mt-4 text-center hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Dashboard</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="block border border-gold-light text-gold-light px-4 py-2 mt-4 text-center hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Property Details Section -->
+    <section id="property-details" class="pt-24 pb-20 bg-elegant-dark">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid gap-8 items-start md:grid-cols-2 py-8 xl:gap-16 sm:py-16 lg:px-6">
+                <!-- Property Description -->
+                <div class="description-container fade-in-up">
+                    <h2 class="mb-4 text-4xl md:text-5xl font-playfair font-bold text-white gold-gradient-text">{{ imovel.nome_do_imovel }}</h2>
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <span class="bg-gold-light text-elegant-black px-4 py-2 text-sm uppercase tracking-wider btn-rounded font-cinzel">R$ {{ imovel.valor_de_venda|floatformat:2 }}</span>
+                        <span class="bg-gold-light text-elegant-black px-4 py-2 text-sm uppercase tracking-wider btn-rounded font-cinzel">{{ imovel.tipo|title }}</span>
+                    </div>
+                    <p class="mb-4 font-bold text-white md:text-lg font-cinzel luxury-text">Descrição:</p>
+                    <p class="mb-8 text-gray-300 md:text-lg font-lora">{{ imovel.descricao }}</p>
+                    <a href="https://wa.me/5561995734984?text=Olá%20vim%20através%20do%20site%2C%20quero%20mais%20informações%20sobre%20o%20imóvel%20{{ imovel.nome_do_imovel }}" class="inline-flex items-center px-6 py-3 text-sm font-medium text-center text-white bg-gold-light hover:bg-gold-dark focus:ring-4 focus:outline-none focus:ring-gold-light btn-rounded font-cinzel gold-sparkle sparkle-text">
+                        Entre em Contato
+                        <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                    </a>
+                </div>
+                <!-- Image Gallery -->
+                <div class="fade-in-up">
+                    <div class="grid grid-cols-2 gap-4">
+                        {% for imagem in imovel.imagens.all|slice:":4" %}
+                        <div class="image-container group">
+                            <img src="{{ imagem.imagem.url }}" alt="Imagem do imóvel" class="rounded-lg">
+                            <div class="gold-overlay"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button id="ver-todas-imagens" class="mt-6 w-full bg-elegant-gray text-white px-6 py-3 uppercase tracking-wider text-sm font-medium hover:bg-gold-light hover:text-elegant-black transition-all duration-300 btn-rounded font-cinzel luxury-text">Ver Todas as Imagens</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal for All Images -->
+    <div id="modal-imagens" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for imagem in imovel.imagens.all %}
+                <div class="image-container">
+                    <img src="{{ imagem.imagem.url }}" alt="Imagem do imóvel" class="rounded-lg">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <section class="py-20 bg-elegant-black">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <span class="text-gold-light text-sm uppercase tracking-widest fade-in-up font-cinzel luxury-text">Fique Atualizado</span>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 fade-in-up gold-gradient-text">Receba Nossas Novidades</h2>
+            <div class="w-24 h-1 bg-gold-light mx-auto mt-6 fade-in-up"></div>
+            <p class="mb-8 text-lg font-lora text-gray-300 sm:px-16 lg:px-48">Inscreva-se na newsletter da Parnassa Imobiliária para receber atualizações exclusivas sobre novos imóveis diretamente no seu e-mail.</p>
+            <form id="newsletter-form" class="w-full max-w-md mx-auto fade-in-up">
+                <div class="flex">
+                    <input type="email" placeholder="Digite seu e-mail" class="w-full bg-elegant-dark border border-gray-700 text-white p-4 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora" required>
+                    <button type="submit" class="bg-gold-light text-elegant-black px-6 py-4 btn-rounded hover:bg-gold-dark transition-all duration-300 gold-sparkle">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-elegant-black py-12 border-t border-elegant-gray">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="fade-in-up">
+                    <div class="text-gold-light font-playfair text-2xl font-bold gold-sparkle sparkle-text mb-4">PARNASSA</div>
+                    <p class="text-gray-400 text-sm font-lora">Elegância, sofisticação e exclusividade na busca pelo seu imóvel ideal.</p>
+                </div>
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Links Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'index' %}" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Início</a></li>
+                        <li><a href="{% url 'allimoveis' %}" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Imóveis</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Sobre</a></li>
+                        <li><a href="https://wa.me/5561995734984" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Contato</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm font-lora">
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Nº SN - Parque Esplanada III, Valparaíso de Goiás - GO</li>
+                        <li><i class="fas fa-phone mr-2"></i> (61) 9573-4984</li>
+                        <li><i class="fas fa-envelope mr-2"></i> contato@parnassa.com.br</li>
+                    </ul>
+                </div>
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Newsletter</h4>
+                    <p class="text-gray-400 text-sm mb-4 font-lora">Receba novidades exclusivas sobre nossos imóveis.</p>
+                    <form id="newsletter-form-footer">
+                        <div class="flex">
+                            <input type="email" placeholder="Seu e-mail" class="w-full bg-elegant-dark border border-gray-700 text-white p-2 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora">
+                            <button type="submit" class="bg-gold-light text-elegant-black px-4 py-2 btn-rounded hover:bg-gold-dark transition-all duration-300">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-elegant-gray text-center fade-in-up">
+                <p class="text-gray-400 text-sm font-lora">© 2025 Parnassa Imobiliária. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('bg-elegant-black', window.scrollY > 50);
+            navbar.classList.toggle('shadow-lg', window.scrollY > 50);
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Modal for Images
+        const modal = document.getElementById('modal-imagens');
+        const openModalBtn = document.getElementById('ver-todas-imagens');
+        const closeModalBtn = document.querySelector('.close');
+        openModalBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Newsletter Form Submission
+        const newsletterForm = document.getElementById('newsletter-form');
+        const newsletterFormFooter = document.getElementById('newsletter-form-footer');
+        [newsletterForm, newsletterFormFooter].forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Inscrição realizada com sucesso! Você receberá nossas novidades.');
+                form.reset();
+            });
+        });
+
+        // Reveal Animation on Scroll
+        const reveals = document.querySelectorAll('.fade-in-up');
+        const revealOnScroll = () => {
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>

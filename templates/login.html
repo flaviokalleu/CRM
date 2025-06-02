@@ -1,42 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        /* Estilos básicos para centralizar e dar um pouco de estilo ao formulário */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(115deg, #0f0c29, #302b63, #24243e);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
+
         .login-container {
-            background-color: #fff;
-            padding: 2em;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 2rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 90%;
+            max-width: 400px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
         }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        input, button {
+            opacity: 0;
+            animation: fadeIn 1.2s forwards;
+        }
+
+        input:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        input:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+
+        button {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #fff;
+            width: calc(100% - 40px);
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 5px #719ECE;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background-image: linear-gradient(to right, #6A00FF, #C471ED, #f7797d);
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        .message {
+            display: none;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: #fff;
+            text-align: center;
+            transition: all 0.5s ease-out;
+        }
+
+        .success {
+            background-color: #4CAF50;
+        }
+
+        .error {
+            background-color: #f44336;
+        }
+
     </style>
 </head>
 <body>
-    {% for error in form.non_field_errors %}
-   <div class="alert alert-danger">{{ error }}</div>
-{% endfor %}
-
     <div class="login-container">
-        <h2>Login</h2>
-        <form method="post">
+        <h2>Bem-vindo ao CRM</h2>
+        <p>Por favor, entre com suas credenciais.</p>
+        <form id="loginForm" method="post" action="{% url 'login' %}">
             {% csrf_token %}
-            {{ form.username.label_tag }} {{ form.username }}
-            {{ form.password.label_tag }} {{ form.password }}
-            <button type="submit">Login</button>
+            {{ form.as_p }}
+            <button type="submit" id="loginButton">Entrar</button>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
         </form>
-        
     </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            // Exemplo: Animação simples ou log para indicar que o formulário está sendo submetido
+            console.log('Tentativa de login...');
+    
+            // Aqui você poderia adicionar validações básicas do lado do cliente, se necessário
+            // Lembre-se de que validações de segurança devem ser feitas no servidor
+    
+            // Exemplo de validação simples: verificar se os campos não estão vazios (ainda que o Django fará sua própria validação no backend)
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message'); // Supondo que você queira mostrar mensagens antes do envio
+    
+            if (username === '' || password === '') {
+                // Impede o envio do formulário se os campos estiverem vazios
+                event.preventDefault();
+                message.textContent = 'Por favor, preencha todos os campos.';
+                message.className = 'message error';
+                message.style.display = 'block';
+            } else {
+                // Se necessário, aqui poderia ir alguma lógica para esconder a mensagem de erro ou para mostrar uma de carregamento
+                message.style.display = 'none'; // Esconde a mensagem de erro se o formulário estiver sendo submetido corretamente
+            }
+        });
+    </script>
+    
 </body>
 </html>

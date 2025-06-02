@@ -1,0 +1,36 @@
+<!-- upload_video.html -->
+{% extends 'base.html' %}
+
+{% block main_content %}
+    <div class="container mx-auto mt-8">
+        <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md text-black">
+            <h2 class="text-3xl font-bold mb-4" style="color: black;">Upload de Vídeo</h2>
+
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold mb-2 border-b border-gray-300 pb-2 text-dark">Título:</label>
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-semibold mb-2 border-b border-gray-300 pb-2">Descrição:</label>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.video_file.id_for_label }}" class="block text-sm font-semibold mb-2 border-b border-gray-300 pb-2">Arquivo de Vídeo:</label>
+                    {{ form.video_file }}
+                    {{ form.video_file.errors }}
+                </div>               
+                
+                
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:shadow-outline-blue hover:bg-blue-600">Upload</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

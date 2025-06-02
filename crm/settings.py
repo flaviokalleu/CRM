@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,11 +25,17 @@ SECRET_KEY = 'django-insecure-0iji++t(awmk_dc%gvjhsduhpf&kqj^8-=cz=f8qud7_d97!1w
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+X_FRAME_OPTIONS = 'ALLOWALL'
 
-ALLOWED_HOSTS = []
-AUTH_USER_MODEL = 'users.Corretor'
-AUTH_USER_MODEL = 'users.correspondente'
+LOGIN_REDIRECT_URL = '*'
 
+
+ALLOWED_HOSTS = ['parnassaimobiliaria.com.br', 'localhost', '127.0.0.1','142.44.199.238']
+
+CSRF_TRUSTED_ORIGINS = ['https://parnassaimobiliaria.com.br']
+AUTH_USER_MODEL = 'users.CustomUser'
+
+BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,11 +48,14 @@ INSTALLED_APPS = [
     'users',
     'widget_tweaks',
     'multiupload',
-
+    'rest_framework',
+    'django_extensions',
 ]
 
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,10 +65,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'users.middlewares.BlockVPNMiddleware',
-    'users.security_middlewares.SecurityMiddleware',
+    'users.middleware.CustomDebugMiddleware',
+    
+    
 ]
 
+
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
 
 
 ROOT_URLCONF = 'crm.urls'
@@ -89,18 +102,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'crm.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'crm_db',
-        'USER': 'root',
-        # Se você tiver uma senha para o usuário root, coloque-a aqui.
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'crm',
+        'USER': 'crm',
+        # Coloque a senha do seu usuário root aqui, se aplicável.
+        'PASSWORD': '99480231aA!',
+        'HOST': '127.0.0.1',
+        # Certifique-se de que a porta está correta, 3360 é um valor incomum.
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8',
+            'init_command': "SET collation_connection = 'utf8_general_ci', sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
@@ -134,20 +149,29 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+USE_TZ = False
+
+CELERY_BROKER_URL = 'redis://localhost:6379/'
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+
+
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+if DEBUG:
+
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+else:
+
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 APPEND_SLASH = False
 # Default primary key field type

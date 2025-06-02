@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" integrity="sha384-oZq2SXP26F1lHZv7+auYpfA/o8Gz24+skt4QUOqSTXrpGRd4Hsqp4U+qYLJ9xib9" crossorigin="anonymous">
+{% endblock %}
+{% block main_content %}
+<style>
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #5e72e4;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      padding: 12px 16px;
+      z-index: 1;
+    }
+
+    .form-container {
+        margin-top: 0.5rem; /* Espaçamento superior de 0.5rem */
+    }
+    .input-select {
+        padding: 0.5rem;
+        
+        border: 1px solid #ccc;
+        border-radius: 19.25rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        color: #333; /* Cor do texto */
+        background-color: #fff; /* Cor de fundo */
+    }
+    /* Ajuste para os links dentro do dropdown */
+    .dropdown-content a {
+      display: block; /* Faz cada link ocupar sua própria linha */
+      padding: 8px 0; /* Adiciona algum espaço vertical para melhorar a aparência */
+      color: black; /* Cor do texto */
+      text-decoration: none; /* Remove o sublinhado dos links */
+      text-align: center;
+    }
+    
+    .dropdown-content a:hover {
+      background-color: black; /* Cor de fundo ao passar o mouse */
+    }
+    
+</style>
+
+<div class="container-fluid">
+    <div class="flex justify-between items-center mb-6">
+        
+        <h2 class="text-2xl font-semibold mb-2 md:mb-0">Lista de Processos</h2>
+        <div class="flex items-center">
+            {% if not request.user|is_corretor %}
+            <button onclick="abrirModal()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer mr-4">
+                Adicionar Processo
+            </button>
+            {% endif %}   
+            <a href="{% static 'arquivopdf/TERMO.pdf' %}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded cursor-pointer mr-4" download>Baixar Ficha</a>
+            
+            <input type="text" placeholder="Pesquisar processo..." id="searchInput" class="md:ml-4 input-group p-2 rounded-md w-full md:w-64 focus:ring-2 focus:ring-indigo-600 focus:outline-none text-black">
+        </div>
+    </div>
+    <div class="card overflow-x-auto text-center">
+        <form action="{% url 'lista_processos' %}" method="get" class="form-container pl-3 pr-3">
+            <div class="row mb-4">
+                <div class="col-md-2 mb-3">
+                    <label for="filtroTipo" class="form-label">Tipo:</label>
+                    <select id="filtroTipo" name="filtroTipo" class="form-select">
+                        <option value="">Todos os tipos</option>
+                        <option value="usado">Usado</option>
+                        <option value="novo">Novo</option>
+                        <option value="agio">Ágio</option>
+                    </select>
+                </div>
+        
+                <div class="col-md-2 mb-3">
+                    <label for="filtroResponsaveis" class="form-label">Responsáveis:</label>
+                    <select id="filtroResponsaveis" name="filtroResponsaveis" class="form-select">
+                        <option value="">Todos os responsáveis</option>
+                        {% for corretor in corretores %}
+                        <option value="{{ corretor.id }}">{{ corretor.first_name }} {{ corretor.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+                <div class="col-md-2 mb-3">
+                    <label for="filtroProprietarios" class="form-label">Proprietários:</label>
+                    <select id="filtroProprietarios" name="filtroProprietarios" class="form-select">
+                        <option value="">Todos os proprietários</option>
+                        {% for proprietario in proprietarios %}
+                        <option value="{{ proprietario.id }}">{{ proprietario.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+        
+                <div class="col-md-2 mb-3">
+                    <label for="filtroProgresso" class="form-label">Progresso:</label>
+                    <select id="filtroProgresso" name="filtroProgresso" class="form-select">
+                        <option value="">Todos os progressos</option>
+                        <option value="concluido">Concluído</option>
+                        <option value="nao_concluido">Não Concluído</option>
+                    </select>
+                </div>
+        
+                <div class="col-md-2 mb-3">
+                    <label for="dataInicio" class="form-label">Data de Início:</label>
+                    <input type="date" id="dataInicio" name="dataInicio" class="form-control">
+                </div>
+        
+                <div class="col-md-2 mb-2">
+                    <label for="dataFim" class="form-label">Data de Fim:</label>
+                    <input type="date" id="dataFim" name="dataFim" class="form-control">
+                    
+                </div>
+        
+                <div class="col-md-1 mb-2 justify-content-center">
+                    <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+                </div>
+            </div>
+        </form>
+        
+        <div id="tableSection">
+            <div class="table-responsive">
+                <table class="table table-striped mb-0" id="processoTable">
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="px-4 py-2 text-center">Nome do Cliente</th>
+                            <th class="px-4 py-2 text-center">Tipo de Processo</th>
+                            <th class="px-4 py-2 text-center">Responsáveis</th>
+                            <th class="px-4 py-2 text-center">Progresso</th>
+                            <th class="px-4 py-2 text-center">Notas</th>
+                            <th class="px-4 py-2 text-center">Início do Processo</th>
+                            <th class="px-4 py-2 text-center">Fim do Processo</th>
+                            <th class="px-4 py-2 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for processo in processos %}
+                        <tr>
+                            <td class="px-4 py-2 text-center">
+                                {% if processo.cliente %}
+                                <a href="{% url 'detalhes_do_processo' cliente_id=processo.cliente.id processo_id=processo.id %}">
+                                    {{ processo.cliente.nome }}
+                                </a>
+                                {% else %}
+                                Cliente não associado
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2 text-center">{{ processo.get_tipo_display }}</td>
+                            <td class="px-4 py-2 text-center">
+                                {% for responsavel in processo.responsaveis.all %}
+                                {{ responsavel.first_name }} {{ responsavel.last_name }}
+                                {% if not forloop.last %}<br>{% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                <div class="progress">
+                                    <div class="progress-bar {% if processo.num_notas > 0 and processo.num_notas_nao_concluidas > 0 %}bg-danger{% else %}bg-info{% endif %}" role="progressbar" style="width: {{ processo.progresso }}%;" aria-valuenow="{{ processo.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                {% if processo.num_notas > 0 %}
+                                <a class="btn btn-primary btn-sm" href="#" role="button" data-toggle="modal" data-target="#notaModal{{ processo.id }}">
+                                    Abrir Notas
+                                    <span class="badge ml-1" style="background-color: {% if processo.num_notas_nao_concluidas > 0 %}red !important{% else %}lightgray{% endif %}; color: white;">{{ processo.num_notas }}</span>
+                                </a>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-2 text-center">{{ processo.data_inicio|date:"Y-m-d" }}</td>
+                            <td class="px-4 py-2 text-center">
+                                {% if processo.data_finalizacao %}
+                                {{ processo.data_finalizacao|date:"Y-m-d" }}
+                                {% endif %}
+                            </td>
+                            <td class="align-middle text-center">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Ações
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a href="{% url 'editar_processo' processo.id %}" target="_blank" class="dropdown-item">Editar processo</a>
+                                        <form action="{% url 'deletar_processo' processo.id %}" method="post" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item" style="border: none; background: none; padding: 0; margin: 0; cursor: pointer;">
+                                                Excluir processo
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{% url 'finalizar_processo' processo.id %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="processo_id" value="{{ processo.id }}">
+                                            <button type="submit" class="dropdown-item">Finalizar processo</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Seção para o gráfico -->
+        <div id="graficoSection" style="display: none;">
+            <!-- Aqui você pode incluir o código para exibir o gráfico -->
+            <!-- Por exemplo, você pode usar bibliotecas como Chart.js para criar gráficos -->
+        </div>
+    </div>
+    
+</div>
+
+{% for processo in processos %}
+    <div class="modal fade" id="notaModal{{ processo.id }}" tabindex="-1" role="dialog" aria-labelledby="notaModalLabel{{ processo.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="notaModalLabel{{ processo.id }}">Notas do Processo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <ul class="list-group">
+                            {% for nota in processo.get_notas %}
+                                <li id="nota{{ nota.id }}" class="list-group-item mb-3">
+                                    {{ nota.texto }}
+                                    {% if user.is_staff %}
+                                        <div class="btn-group float-right">
+                                            <form method="POST" action="{% url 'enviarmensagemcorrespondente' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="nota_id" value="{{ nota.id }}">
+                                                <input type="hidden" name="processo_id" value="{{ processo.id }}">
+                                                <button type="submit" class="btn btn-primary btn-sm">Enviar Mensagem</button>
+                                            </form>
+                                            <form action="{% url 'deletar_nota' nota.id %}" method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="processo_id" value="{{ processo.id }}">
+                                                <button type="submit" class="btn btn-danger btn-sm">Excluir Nota</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+<script>
+    function abrirModal() {
+        $('#myModal').modal('show');
+    }
+
+    function showTableSection() {
+        document.getElementById("tableSection").style.display = "block";
+        document.getElementById("graficoSection").style.display = "none";
+    }
+
+    function showGraficoSection() {
+        document.getElementById("tableSection").style.display = "none";
+        document.getElementById("graficoSection").style.display = "block";
+        // Aqui você pode adicionar o código para exibir o gráfico
+    }
+</script>
+{% endblock %}
+
+

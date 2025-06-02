@@ -1,0 +1,306 @@
+<!-- cliente_processo.html -->
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block main_content %}
+<style>
+   .row {
+   margin-left: 30px;
+   }
+   .timeline {
+   position: relative;
+   padding-left: 60px;
+   list-style: none;
+   }
+   .timeline::before {
+   content: '';
+   position: absolute;
+   left: 29px;
+   top: 90px;
+   bottom: 0;
+   width: 2px;
+   background: #333;
+   z-index: 1;
+   margin-left: 100px;
+   }
+   .timeline-item {
+   position: relative;
+   margin-bottom: 35px;
+   }
+   label, .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+      margin-left: 0.25rem;
+  }
+  .dark-version .card p, .dark-version .swal2-popup p, .dark-version .dropdown .dropdown-menu p, .dark-version .kanban-board p {
+   color: #fff !important;
+   opacity: 100;
+}
+   .timeline-icon {
+   position: absolute;
+   left: 54px;
+   top: 120px;
+   transform: translateY(-50%);
+   width: 32px;
+   height: 32px;
+   border-radius: 50%;
+   background: #555;
+   border: 2px solid #777;
+   text-align: center;
+   line-height: 32px;
+   font-weight: bold;
+   color: #fff;
+   z-index: 2;
+   }
+   .timeline-item.completed .timeline-icon.completed{
+   background: #4CAF50;
+   border-color: #4CAF50;
+   }
+   .timeline-content {
+   position: relative;
+   padding-left: 15px;
+   top: 100px;
+   margin-left: 90px;
+   }
+   .timeline-content h4 {
+   font-size: 1em;
+   color: #fff;
+   display: inline-block;
+   vertical-align: middle;
+   }
+</style>
+<body class="g-sidenav-show bg-gray-100">
+   <div class="container-fluid">
+      <div class="row mt-4">
+         <!-- Coluna esquerda -->
+         <div class="col-lg-7 mb-lg-0 mb-4">
+            
+
+            <div class="card z-index-2 h-100">
+      <div class="card-body p-3">
+        <h2 class="text-2xl font-bold mb-4">Detalhes do Processo</h2>
+        
+        <h3 class="text-xl font-bold mb-2">Contato do Cliente:</h3>
+        <p>Nome do Cliente: {{ cliente.nome  }}</p>
+        <p>Email: {{ cliente.email }}</p>
+        <p>Telefone: {{ cliente.telefone }}</p>
+        
+        <h4 class="text-xl font-bold mb-2">Tipo de Processo: {{ tipo_processo.nome }}</h4>
+        <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addNoteModal">
+         Adicionar Nota
+     </button>
+
+        <!-- Ações do Processo -->
+        <div class="text-center mt-4">
+         <div class="btn-group">
+             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Abrir Documentos
+             </button>
+             <div class="dropdown-menu">
+                 <a id="pdfLink1" href="#" class="dropdown-item" onclick="openPdf('documentos_pessoais_combined.pdf')">Documentos Pessoais</a>
+                 <a id="pdfLink2" href="#" class="dropdown-item" onclick="openPdf('extrato_bancario_combined.pdf')">Extrato Bancário</a>
+                 <a id="pdfLink3" href="#" class="dropdown-item" onclick="openPdf('documentos_dependente_combined.pdf')">Documentos Dependente</a>
+                 <a id="pdfLink4" href="#" class="dropdown-item" onclick="openPdf('documentos_conjuge_combined.pdf')">Documentos Cônjuge</a>
+             </div>
+         </div>
+     
+         <!-- Adicione este link para abrir o PDF anexado -->
+         
+         <a id="imovelDocumentacaoLink" target="_blank" class="btn btn-primary btn-sm">
+             Documentação do Imóvel
+         </a>
+     
+         <a id="proprietarioDocumentacaoLink" target="_blank" class="btn btn-primary btn-sm">
+             Documentação do Proprietário
+         </a>
+     </div>
+     
+
+       
+        <!-- Formulário de Opções do Processo -->
+        <form method="post" action="{% url 'detalhes_do_processo' cliente_id=processo.cliente.id processo_id=processo.id %}">
+         {% csrf_token %}
+         <h4 class="text-lg font-semibold mb-2">Opções do Processo:</h4>
+         <div class="mb-4">
+             <button type="button" id="toggleOpcoes" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4">
+                 Mostrar Opções do Processo
+             </button>
+     
+             <!-- Contêiner das Opções do Processo (inicialmente oculto) -->
+             <div id="opcoesProcesso" class="hidden">
+                 {% for opcao, data in opcoes_selecionadas_list %}
+                     <label class="block mb-2">{{ opcao }} - {{ data }}</label>
+                 {% endfor %}
+             </div>
+     
+             <!-- Campo oculto para armazenar a opção selecionada -->
+             <input type="hidden" id="opcao_selecionada" name="opcao_selecionada" value="">
+         </div>
+         <div class="mb-4">
+             {{ form.opcoes_processo }}
+         </div>
+         {% if not request.user|is_corretor %}
+         <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Atualizar Tipos de Processos</button>
+         {% endif %}
+     </form>
+
+    </div>
+</div>
+
+           
+         </div>
+
+         <!-- Coluna direita para a linha do tempo -->
+         <div class="col-lg-5">
+            <div class="card z-index-2 h-100">
+               <div class="timeline">
+                  {% for campo in opcoes_disponiveis %}
+                     {% with campo_str=campo|stringformat:"s" %}
+                        {% if campo_str in opcoes_selecionadas_list %}
+                           <div class="timeline-item completed">
+                              <div class="timeline-icon completed">{{ forloop.counter }}</div>
+                              <div class="timeline-content">
+                                 <h4>{{ campo }}</h4>
+                              </div>
+                           </div>
+                        {% else %}
+                           <div class="timeline-item">
+                              <div class="timeline-icon">{{ forloop.counter }}</div>
+                              <div class="timeline-content">
+                                 <h4>{{ campo }}</h4>
+                              </div>
+                           </div>
+                        {% endif %}<br>
+                     {% endwith %}
+                  {% endfor %}
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+
+   <!-- Add Note Modal -->
+<div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="addNoteModalLabel">Adicionar Nota</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <!-- Form for adding a note -->
+            <!-- Adicionado o campo 'note_recipient' no formulário do modal -->
+<form method="post" action="{% url 'nova_nota' cliente_id=cliente.id processo_id=processo.id %}">
+   {% csrf_token %}
+   <!-- Dropdown para selecionar proprietário ou corretor -->
+   <div class="form-group">
+      <label for="noteRecipient">Selecione o destinatário:</label>
+      <select class="form-control" id="noteRecipient" name="note_recipient">
+         <option value="owner">Proprietário</option>
+         <option value="broker">Corretor</option>
+      </select>
+   </div>
+   <!-- Área de texto para inserir a nota -->
+   <div class="form-group">
+      <label for="noteText">Digite a nota:</label>
+      <textarea class="form-control" id="noteText" name="note_text" rows="3" required></textarea>
+   </div>
+   <!-- Botão de envio -->
+   <button type="submit" class="btn btn-primary">Enviar Nota</button>
+</form>
+<script>
+   document.getElementById('toggleOpcoes').addEventListener('click', function(event) {
+       event.preventDefault();
+       var opcoes = document.getElementById('opcoesProcesso');
+       if (opcoes.classList.contains('hidden')) {
+           opcoes.classList.remove('hidden');
+       } else {
+           opcoes.classList.add('hidden');
+       }
+   });
+</script>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+       var selectOpcoes = document.getElementById('id_opcoes_processo'); // Troque 'id_opcoes_processo' pelo ID real do seu elemento <select>
+       var campoOpcaoSelecionada = document.getElementById('opcao_selecionada'); // ID do campo oculto
+
+       selectOpcoes.addEventListener('change', function() {
+           var opcaoSelecionada = selectOpcoes.value; // Obtém a opção selecionada
+           campoOpcaoSelecionada.value = opcaoSelecionada; // Define o valor do campo oculto
+       });
+   });
+</script>
+
+
+<script>
+   // Dados do cliente
+   let cliente = {
+       id: "{{ cliente.id }}",
+       nome: "{{ cliente.nome }}",
+       cpf: "{{ cliente.cpf }}",
+       nomeCorretor: "{{ cliente.corretor.username }}"
+   };
+
+   // Dados do proprietário
+   let proprietario = {
+       id: "{{ processo.proprietario_id }}", // Corrigido para usar processo.proprietario_id
+       nome: "{{ processo.proprietario.nome }}", // Adicionei o nome do proprietário para referência futura
+       cpf_cnpj: "{{ processo.proprietario.cpf_cnpj }}"
+   };
+
+   // Função para abrir documentos específicos do cliente
+   function openPdf(nomeCorretor, cpf, categoriaDocumento) {
+       let pdfPath = `/media/documentos/${nomeCorretor}/${cpf}/${categoriaDocumento}/${categoriaDocumento}_combined.pdf`;
+       window.open(pdfPath, '_blank');
+   }
+
+   // Configurar os links quando a página for carregada
+   document.addEventListener('DOMContentLoaded', function() {
+       // Configurar os links para os documentos específicos do cliente
+       document.getElementById('pdfLink1').setAttribute('onclick', `openPdf('${cliente.nomeCorretor}', '${cliente.cpf}', 'documentos_pessoais')`);
+       document.getElementById('pdfLink2').setAttribute('onclick', `openPdf('${cliente.nomeCorretor}', '${cliente.cpf}', 'extrato_bancario')`);
+       document.getElementById('pdfLink3').setAttribute('onclick', `openPdf('${cliente.nomeCorretor}', '${cliente.cpf}', 'documentos_dependente')`);
+       document.getElementById('pdfLink4').setAttribute('onclick', `openPdf('${cliente.nomeCorretor}', '${cliente.cpf}', 'documentos_conjuge')`);
+
+       // Caminho dinâmico para a documentação do proprietário
+       let proprietarioPdfPath = `/media/proprietario/${proprietario.nome.charAt(0).toLowerCase()}${proprietario.nome.slice(1)}/${proprietario.nome.charAt(0).toLowerCase()}${proprietario.nome.slice(1)}_${proprietario.cpf_cnpj}.pdf?${new Date().getTime()}`;
+
+
+       // Definir o href para o link de documentação do proprietário
+       document.getElementById('proprietarioDocumentacaoLink').href = proprietarioPdfPath;
+   });
+</script>
+
+
+
+<!-- Modifique o script JavaScript -->
+<script>
+   // Assuming you have the process object available in your JavaScript code
+   let processo = {
+       imoveis: [{  // Assuming 'imoveis' is a ForeignKey or a related field in your model
+           id: "{{ processo.imoveis.first.id }}",
+           documentacao: "{{ processo.imoveis.first.documentacao }}"
+           // Add other necessary properties
+       }]
+       // Add other properties of the process object
+   };
+
+   // Verifica se o imóvel e a documentação estão definidos
+   if (processo.imoveis.length > 0 && processo.imoveis[0].documentacao) {
+       // Dynamically construct the URL for the property documentation
+       let imovelDocumentacaoUrl = `/media/${processo.imoveis[0].documentacao}?${new Date().getTime()}`;
+
+       // Set the href attribute for the link
+       document.getElementById('imovelDocumentacaoLink').href = imovelDocumentacaoUrl;
+   } else {
+       // Se não houver imóvel ou documentação, oculte o link ou trate conforme necessário
+       document.getElementById('imovelDocumentacaoLink').style.display = 'none';
+   }
+</script>
+</div>
+   {% endblock %}
+   

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PARNASSÁ Imobiliária - Explore nosso portfólio exclusivo de imóveis.">
+    <title>PARNASSÁ Imobiliária | Todos os Imóveis</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            light: '#D4AF37',
+                            DEFAULT: '#CFB53B',
+                            dark: '#996515'
+                        },
+                        elegant: {
+                            black: '#121212',
+                            dark: '#1E1E1E',
+                            gray: '#2D2D2D'
+                        }
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'cinzel': ['Cinzel', 'serif'],
+                        'lora': ['Lora', 'serif']
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-500px 0' },
+                            '100%': { backgroundPosition: '500px 0' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        sparkle: {
+                            '0%': { left: '-100%' },
+                            '100%': { left: '200%' }
+                        },
+                        pulseIcon: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.1)' }
+                        }
+                    },
+                    animation: {
+                        shimmer: 'shimmer 3s infinite linear',
+                        fadeIn: 'fadeIn 0.8s ease-out forwards',
+                        sparkle: 'sparkle 2s infinite',
+                        pulseIcon: 'pulseIcon 1.5s infinite'
+                    },
+                    borderRadius: {
+                        'lg': '12px',
+                        'xl': '16px',
+                        'sm': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Lora', serif;
+            letter-spacing: 0.5px;
+            background: #121212;
+        }
+        .btn-rounded {
+            border-radius: 12px;
+            transition: all 0.4s ease;
+        }
+        .card-rounded {
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+        .input-rounded {
+            border-radius: 8px;
+        }
+        .social-icon a {
+            border-radius: 50%;
+        }
+        .luxury-text {
+            font-family: 'Cinzel', serif;
+            text-shadow: 1px 1px 6px rgba(212, 175, 55, 0.5);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .luxury-text:hover {
+            transform: scale(1.05);
+            color: #D4AF37;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #D4AF37, #E5C100, #CFB53B, #D4AF37);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: shimmer 3s infinite linear;
+        }
+        .sparkle-text {
+            position: relative;
+            overflow: hidden;
+        }
+        .sparkle-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.6), transparent);
+            transform: skewX(-25deg);
+            animation: sparkle 2s infinite;
+        }
+        .gold-sparkle {
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .gold-sparkle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.4), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+        }
+        .bg-elegant-gray {
+            border-radius: 16px;
+            transition: transform 0.4s ease;
+        }
+        .group:hover .bg-elegant-gray {
+            transform: translateY(-10px);
+        }
+        .group:hover .luxury-text {
+            color: #D4AF37;
+        }
+        .group:hover img {
+            filter: brightness(1.1);
+        }
+        .gold-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(212, 175, 55, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .group:hover .gold-overlay {
+            opacity: 1;
+        }
+        input, select, button {
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        .fade-in-up {
+            animation: fadeIn 1s ease-out;
+        }
+        .pulse-icon {
+            animation: pulseIcon 1.5s infinite;
+        }
+        .pagination a {
+            transition: all 0.3s ease;
+        }
+        .pagination a:hover {
+            background-color: #D4AF37;
+            color: #121212;
+        }
+    </style>
+</head>
+<body class="bg-elegant-black text-white font-lora">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-20 transition-all duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="{% static 'img/logos/logo.png' %}" alt="PARNASSÁ Imobiliária Logo" class="h-12 w-auto gold-sparkle">
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'index' %}" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+                <a href="{% url 'allimoveis' %}" class="text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+                <a href="#sobre" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+                <a href="https://wa.me/5561995734984" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="border border-gold-light text-gold-light px-5 py-2 hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Dashboard</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="border border-gold-light text-gold-light px-5 py-2 hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+                {% endif %}
+            </div>
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden bg-elegant-dark py-4 px-4 md:hidden">
+            <a href="{% url 'index' %}" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+            <a href="{% url 'allimoveis' %}" class="block text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+            <a href="#sobre" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+            <a href="https://wa.me/5561995734984" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'login' %}" class="block border border-gold-light text-gold-light px-4 py-2 mt-4 text-center hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Dashboard</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="block border border-gold-light text-gold-light px-4 py-2 mt-4 text-center hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Imóveis Section -->
+    <section id="all-properties" class="pt-24 pb-20 bg-elegant-dark">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <span class="text-gold-light text-sm uppercase tracking-widest fade-in-up font-cinzel luxury-text">Portfólio Exclusivo</span>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 fade-in-up gold-gradient-text">Todos os Imóveis</h2>
+                <div class="w-24 h-1 bg-gold-light mx-auto mt-6 fade-in-up"></div>
+            </div>
+
+            <!-- Filtro -->
+            <form id="filter-form" method="GET" class="flex flex-col sm:flex-row items-center justify-center mb-12 gap-4 fade-in-up">
+                <div class="flex items-center w-full sm:w-auto">
+                    <label for="tipo_imovel" class="mr-2 text-white font-cinzel luxury-text">Filtrar por Tipo:</label>
+                    <select name="tipo_imovel" id="tipo_imovel" class="w-full sm:w-auto bg-elegant-black border border-gray-700 text-white p-3 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora">
+                        <option value="">Todos</option>
+                        <option value="NOVO">Novo</option>
+                        <option value="USADO">Usado</option>
+                        <option value="AGIO">Ágio</option>
+                    </select>
+                </div>
+                <button type="submit" name="filter" class="bg-gold-light text-elegant-black px-6 py-3 uppercase tracking-wider text-sm font-medium hover:bg-gold-dark transition-all duration-300 gold-sparkle btn-rounded font-cinzel sparkle-text">Filtrar</button>
+            </form>
+
+            <!-- Grid de Imóveis -->
+            <div id="property-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for imovel in page_obj %}
+                <div class="bg-elegant-gray card-rounded group fade-in-up">
+                    <div class="relative overflow-hidden">
+                        <img src="{{ imovel.imagem_de_capa.url }}" alt="{{ imovel.nome_do_imovel }}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="gold-overlay"></div>
+                        <div class="absolute top-4 right-4 bg-gold-light text-elegant-black px-3 py-1 text-xs uppercase tracking-wider btn-rounded">
+                            {{ imovel.tipo_imovel|title }}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-cinzel font-semibold mb-2 luxury-text">{{ imovel.nome_do_imovel }}</h3>
+                        <p class="text-gray-400 mb-4 text-sm font-lora line-clamp-3">{{ imovel.descricao }}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gold-light font-semibold font-cinzel price">
+                                R$ {{ imovel.valor_de_venda|floatformat:2 }}
+                            </span>
+                            <a href="{% url 'detalhes_imovel' imovel_id=imovel.pk %}" class="text-white hover:text-gold-light transition-colors duration-300 flex items-center gap-2 font-cinzel luxury-text">
+                                <span>Detalhes</span>
+                                <i class="fas fa-arrow-right text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Paginação -->
+            <nav aria-label="Page navigation" class="flex justify-center mt-12 fade-in-up pagination">
+                <ul class="inline-flex -space-x-px text-sm">
+                    {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page=1" class="flex items-center justify-center px-4 py-2 leading-tight text-white bg-elegant-gray border border-gray-700 rounded-l-lg hover:bg-gold-light hover:text-elegant-black">Primeira</a>
+                    </li>
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}" class="flex items-center justify-center px-4 py-2 leading-tight text-white bg-elegant-gray border border-gray-700 hover:bg-gold-light hover:text-elegant-black">Anterior</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    <li>
+                        <a href="?page={{ num }}" {% if num == page_obj.number %} aria-current="page" class="flex items-center justify-center px-4 py-2 text-gold-light bg-elegant-black border border-gold-light" {% else %} class="flex items-center justify-center px-4 py-2 text-white bg-elegant-gray border border-gray-700 hover:bg-gold-light hover:text-elegant-black" {% endif %}>{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}" class="flex items-center justify-center px-4 py-2 leading-tight text-white bg-elegant-gray border border-gray-700 hover:bg-gold-light hover:text-elegant-black">Próxima</a>
+                    </li>
+                    <li>
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="flex items-center justify-center px-4 py-2 leading-tight text-white bg-elegant-gray border border-gray-700 rounded-r-lg hover:bg-gold-light hover:text-elegant-black">Última</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-elegant-black py-12 border-t border-elegant-gray">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Logo e Descrição -->
+                <div class="fade-in-up">
+                    <img src="{% static 'img/logos/logo.png' %}" alt="PARNASSÁ Imobiliária Logo" class="h-12 w-auto mb-4 gold-sparkle">
+                    <p class="text-gray-400 text-sm font-lora">Elegância, sofisticação e exclusividade na busca pelo seu imóvel ideal.</p>
+                </div>
+                
+                <!-- Links Rápidos -->
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Links Rápidos</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'index' %}" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Início</a></li>
+                        <li><a href="{% url 'allimoveis' %}" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Imóveis</a></li>
+                        <li><a href="#sobre" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Sobre</a></li>
+                        <li><a href="https://wa.me/5561995734984" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contato -->
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Contato</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm font-lora">
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>Nº SN - Parque Esplanada III, Valparaíso de Goiás - GO Rua, R. Vinte e Nove, 01, Valparaíso de Goiás - GO, 72876-354</li>
+                        <li><i class="fas fa-phone mr-2"></i>(61) 9573-4984</li>
+                        <li><i class="fas fa-envelope mr-2"></i>parnassaimobiliaria@gmail.com</li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4 social-icon">
+                        <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="fade-in-up">
+                    <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Newsletter</h4>
+                    <p class="text-gray-400 text-sm mb-4 font-lora">Receba novidades exclusivas sobre nossos imóveis.</p>
+                    <form id="newsletter-form">
+                        <div class="flex">
+                            <input type="email" placeholder="Seu email" class="w-full bg-elegant-dark border border-gray-700 text-white p-2 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora">
+                            <button type="submit" class="bg-gold-light text-elegant-black px-4 py-2 btn-rounded hover:bg-gold-dark transition-all duration-300">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-elegant-gray text-center fade-in-up">
+                <p class="text-gray-400 text-sm font-lora">© 2025 PARNASSÁ Imobiliária. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Função para formatar valores no padrão BRL (R$ 230.000,00)
+        function formatarParaReal(valor) {
+            // Converte o valor para número, removendo "R$" e espaços
+            let numero = valor.replace(/[^\d.,]/g, '').replace(',', '.');
+            numero = parseFloat(numero);
+            
+            // Verifica se o número é válido
+            if (isNaN(numero)) {
+                return 'Valor inválido';
+            }
+            
+            // Formata para o padrão BRL
+            return numero.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
+        }
+
+        // Aplica a formatação apenas aos preços dos imóveis
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('#all-properties .price').forEach(element => {
+                const valorOriginal = element.textContent; // Ex.: "R$ 230000.00"
+                const valorFormatado = formatarParaReal(valorOriginal); // Ex.: "R$ 230.000,00"
+                element.textContent = valorFormatado;
+            });
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('bg-elegant-black', window.scrollY > 50);
+            navbar.classList.toggle('shadow-lg', window.scrollY > 50);
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Smooth Scroll for Sobre Link
+        document.querySelectorAll('a[href="#sobre"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector('#sobre').scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Hide mobile menu after clicking
+                mobileMenu.classList.add('hidden');
+                const icon = mobileMenuButton.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            });
+        });
+
+        // Reveal Animation on Scroll
+        const reveals = document.querySelectorAll('.fade-in-up');
+        const revealOnScroll = () => {
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // Newsletter Form Submission
+        const newsletterForm = document.getElementById('newsletter-form');
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Inscrição realizada com sucesso! Você receberá nossas novidades.');
+            newsletterForm.reset();
+        });
+    </script>
+</body>
+</html>

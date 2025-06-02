@@ -1,62 +1,147 @@
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .form-container .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .form-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3c3f9f;
+  }
+  .form-container p {
+    color: #f10000;
+  }
+  .form-group {
+    margin-bottom: 16px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #FFF;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    color: black;
+  }
+  .form-group input:focus {
+    border-color: #a5acff;
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+  }
+  .error-message {
+    color: red;
+    font-size: 12px;
+  }
+  .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #3c3f9f;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+  .submit-btn:hover {
+    background-color: #292c7f;
+  }
+  .submit-btn:focus {
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+  }
+</style>
+{% extends 'base.html' %} {% block main_content %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário Estilizado</title>
+<html lang="pt-br">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro de Correspondentes</title>
 
     <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Heroicons - for some icons (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/heroicons@1.0.4/dist/heroicons.min.js"></script>
-</head>
-<body class="bg-blue-900">
+  </head>
+  <body class="g-sidenav-show bg-gray-100">
+    <div class="form-container">
+      <div class="mb-4 text-center">
+        <h1 class="text-3xl font-bold mb-2">Bem-vindo</h1>
+        <p class="text-gray-500">
+          Por favor, preencha o formulário abaixo. Obs: não adicione o "9" no
+          número de telefone.
+        </p>
+      </div>
 
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-            <div class="mb-4 text-center">
-                <h1 class="text-3xl font-bold mb-2">Bem-vindo</h1>
-                <p class="text-gray-500">Por favor, preencha o formulário abaixo. obs: não adicione o "9" no numero de telefone.</p>
-            </div>
-    
-            <form method="post" class="space-y-4">
-                {% csrf_token %}
-                
-                {% for field in form %}
-                <div>
-                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-600">{{ field.label }}</label>
-                    {% if field.name == "telefone" %}
-                    <div class="flex border rounded-md mt-1">
-                        <span class="p-2 bg-gray-100 border-r">+55</span>
-                        <input 
-                            id="{{ field.id_for_label }}" 
-                            type="text" 
-                            name="{{ field.name }}" 
-                            class="flex-grow p-2"
-                            placeholder="DDD Número"
-                        >
-                    </div>
-                    {% else %}
-                    <input 
-                        id="{{ field.id_for_label }}" 
-                        type="text" 
-                        name="{{ field.name }}" 
-                        class="mt-1 p-2 w-full border rounded-md" 
-                        placeholder="Digite seu {{ field.label|lower }}"
-                    >
-                    {% endif %}
-                    {% if field.errors %}
-                    <p class="mt-1 text-red-500 text-sm">{{ field.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                {% endfor %}
-    
-                <button type="submit" class="w-full py-2 px-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700">Enviar</button>
-            </form>
+      <form method="post" class="space-y-4">
+        {% csrf_token %} {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}" class="text-sm font-medium text-gray-600">
+                {% if field.label == "Username" %}
+                    Nome de Usuário
+                {% elif field.label == "First name" %}
+                    Primeiro Nome
+                {% elif field.label == "Last name" %}
+                    Sobrenome
+                {% else %}
+                    {{ field.label }}
+                {% endif %}
+            </label>
+          {% if field.name == "telefone" %}
+          <div class="flex border rounded-md">
+            <span class="p-2 bg-gray-100 border-r">+55</span>
+            <input
+              id="{{ field.id_for_label }}"
+              type="text"
+              name="{{ field.name }}"
+              class="flex-grow p-2 text-black"
+              placeholder="DDD Número"
+            />
+          </div>
+          {% elif field.name == "password" %}
+          <input
+            id="{{ field.id_for_label }}"
+            type="password"
+            name="{{ field.name }}"
+            autocomplete="off"
+            class="text-black"
+          />
+          {% else %}
+          <input
+            id="{{ field.id_for_label }}"
+            type="text"
+            name="{{ field.name }}"
+            autocomplete="off"
+            class="text-black"
+          />
+          {% endif %} {% if field.errors %}
+          <p class="error-message">{{ field.errors.0 }}</p>
+          {% endif %}
         </div>
-    </div>
-    
+        {% endfor %}
 
-</body>
+        <button type="submit" class="submit-btn">Enviar</button>
+      </form>
+    </div>
+  </body>
 </html>
+{% endblock %}

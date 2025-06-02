@@ -1,0 +1,123 @@
+<style>
+    .modal-dialog .modal-content {
+      background-color: #051139 !important;
+      color: white !important; 
+    }
+  </style>
+{% extends 'base.html' %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="pt-br">
+   {% load static %}
+   
+   {% load custom_filters %}
+ 
+   <!DOCTYPE html>
+   <html lang="pt-br">
+      <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+         <!-- Apple Touch Icon -->
+         <link rel="apple-touch-icon" sizes="76x76" href="{% static 'img/apple-icon.png' %}">
+         <!-- Favicon -->
+         <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+         <title>
+            Dashboard Parnassa Imobiliaria - By Flavio Kalleu
+         </title>
+         <!-- Fonts -->
+         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+         <!-- Nucleo Icons -->
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+         <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-icons.css' %}">
+         <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+         <!-- Chart.js -->
+         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+         <!-- Font Awesome Icons -->
+         <script src="https://kit.fontawesome.com/1e74b66dca.js" crossorigin="anonymous"></script>
+         <link rel="stylesheet" type="text/css" href="{% static 'css/nucleo-svg.css' %}">
+         <!-- Argon Dashboard CSS -->
+         <link rel="stylesheet" type="text/css" href="{% static 'css/argon-dashboard.css' %}">
+         <!-- Tailwind CSS -->
+         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+         <!-- Ionicons -->
+         <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+         <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+      </head>
+      <body class="g-sidenav-show bg-gray-100">
+         <main class="main-content position-relative max-w-7xl mx-auto border-radius-lg">
+            <div class="container-fluid py-4 px-2 sm:px-4">
+              <div class="flex flex-wrap">
+                <div class="w-full">
+                  <div class="card shadow-lg rounded-lg">
+                    <div class="card-body p-3 sm:p-6">
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 float-right" data-bs-toggle="modal" data-bs-target="#addProcessoModal">Adicionar Proprietário</button>
+                      <h2 class="text-xl sm:text-2xl font-bold text-center mb-4 text-white bg-blue-900 p-3 sm:p-4 rounded">Lista de Proprietários</h2>
+                      <div class="overflow-x-auto">
+                        <table class="min-w-full text-white">
+                          <thead class="bg-blue-800 text-white">
+                            <tr>
+                              <th class="py-2 px-3 sm:py-3 sm:px-6 text-center">Nome</th>
+                              <th class="py-2 px-3 sm:py-3 sm:px-6 text-center">Telefone</th>
+                              <th class="py-2 px-3 sm:py-3 sm:px-6 text-center">AÇÕES</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for proprietario in proprietarios %}
+                            <tr class="border-b border-blue-700">
+                              <td class="py-2 px-3 sm:py-2 sm:px-4 text-center">{{ proprietario.nome }}</td>
+                              <td class="py-2 px-3 sm:py-2 sm:px-4 text-center">{{ proprietario.telefone }}</td>
+                              <td class="py-2 px-3 sm:py-2 sm:px-4 text-center">
+                                <div class="dropdown relative">
+                                  <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Ações
+                                  </button>
+                                  <ul class="dropdown-menu min-w-max absolute hidden bg-white text-base z-50 float-left py-2 list-none text-left rounded-lg shadow-lg mt-1 hidden m-0 bg-clip-padding border-none" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700" href="{% url 'editar_proprietario' proprietario.id %}">Editar</a></li>
+                                    <li><a class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700" href="{% url 'deletar_proprietario' proprietario.id %}">Deletar</a></li>
+                                    <li><a class="dropdown-item text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700" href="{% url 'visualizar_documentacao' proprietario.id %}" target="_blank">Visualizar Documentação</a></li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Modal para adicionar proprietário -->
+              <div class="modal fade" id="addProcessoModal" tabindex="-1" aria-labelledby="addProcessoModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="addProcessoModalLabel">Adicionar Proprietário</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="post" action="{% url 'adicionar_proprietario' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="space-y-4">
+                          {% for field in form %}
+                          <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                            <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="mt-1 p-2 w-full border bg-white rounded-md shadow-sm text-gray-900">
+                          </div>
+                          {% endfor %}
+                        </div>
+                        <div class="mt-4">
+                          <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+          
+       </body>
+       
+   </html>
+   {% endblock %}

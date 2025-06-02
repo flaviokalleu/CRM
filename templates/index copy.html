@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parnassa Imobiliária - Imóveis de luxo com elegância e exclusividade.">
+    <title>Parnassa Imobiliária | Luxo e Exclusividade</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <style>
+        body {
+            background-color: #0A0A0A;
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Cores Personalizadas */
+        .luxe-gold {
+            color: #D4A017;
+        }
+        .luxe-gold-light {
+            color: #F0C05A;
+        }
+        .luxe-gold-dark {
+            color: #A67C00;
+        }
+        .luxe-black {
+            background-color: #0A0A0A;
+        }
+        .luxe-dark {
+            background-color: #1A1A1A;
+        }
+        .luxe-gray {
+            background-color: #2A2A2A;
+        }
+        .border-luxe-gold {
+            border-color: #D4A017;
+        }
+
+        /* Efeitos Luxuosos */
+        .gold-glow {
+            background: linear-gradient(45deg, #D4A017, #F0C05A, #D4A017);
+            background-size: 200% auto;
+            animation: glow 4s infinite ease-in-out;
+        }
+        .luxe-overlay {
+            background: linear-gradient(to bottom, rgba(10, 10, 10, 0.7), rgba(10, 10, 10, 0.9));
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(212, 160, 23, 0.3);
+        }
+        .reveal {
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+        .reveal:nth-child(1) { animation-delay: 0.2s; }
+        .reveal:nth-child(2) { animation-delay: 0.4s; }
+        .reveal:nth-child(3) { animation-delay: 0.6s; }
+        .gold-particle {
+            position: relative;
+        }
+        .gold-particle::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: #F0C05A;
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* Animações */
+        @keyframes glow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 200% 50%; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Fontes Personalizadas */
+        .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+    </style>
+</head>
+<body class="text-white luxe-black">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-20 luxe-black bg-opacity-80 backdrop-blur-md transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <div class="luxe-gold-light font-cinzel text-3xl font-bold gold-glow px-2">PARNASSA</div>
+        </div>
+        <div class="hidden md:flex items-center space-x-10">
+            <a href="#home" class="luxe-gold-light hover:luxe-gold-dark text-sm uppercase tracking-widest transition-colors duration-300">Home</a>
+            <a href="#imoveis" class="luxe-gold-light hover:luxe-gold-dark text-sm uppercase tracking-widest transition-colors duration-300">Imóveis</a>
+            <a href="#servicos" class="luxe-gold-light hover:luxe-gold-dark text-sm uppercase tracking-widest transition-colors duration-300">Serviços</a>
+            <a href="#sobre" class="luxe-gold-light hover:luxe-gold-dark text-sm uppercase tracking-widest transition-colors duration-300">Sobre</a>
+            <a href="#contato" class="border-luxe-gold luxe-gold-light px-6 py-2 hover:bg-luxe-gold-light hover:luxe-black transition-all duration-300 text-sm uppercase tracking-widest">Contato</a>
+        </div>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="luxe-gold-light focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden luxe-dark py-4 px-4 md:hidden">
+        <a href="#home" class="block luxe-gold-light py-2 text-sm uppercase tracking-widest hover:luxe-gold-dark transition-colors duration-300">Home</a>
+        <a href="#imoveis" class="block luxe-gold-light py-2 text-sm uppercase tracking-widest hover:luxe-gold-dark transition-colors duration-300">Imóveis</a>
+        <a href="#servicos" class="block luxe-gold-light py-2 text-sm uppercase tracking-widest hover:luxe-gold-dark transition-colors duration-300">Serviços</a>
+        <a href="#sobre" class="block luxe-gold-light py-2 text-sm uppercase tracking-widest hover:luxe-gold-dark transition-colors duration-300">Sobre</a>
+        <a href="#contato" class="block border-luxe-gold luxe-gold-light px-6 py-2 mt-4 text-center hover:bg-luxe-gold-light hover:luxe-black transition-all duration-300 text-sm uppercase tracking-widest">Contato</a>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+    <div id="particles-js"></div>
+    <div class="absolute inset-0 luxe-black luxe-overlay"></div>
+    <video autoplay loop muted class="absolute w-full h-full object-cover opacity-30">
+        <source src="https://cdn.pixabay.com/video/2024/03/22/205008-928139373_tiny.mp4" type="video/mp4">
+    </video>
+    <div class="relative z-10 text-center px-4 max-w-5xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-cinzel font-bold mb-6 luxe-gold-light gold-glow">PARNASSA LUXE</h1>
+        <p class="text-lg md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto reveal">Descubra o ápice do luxo imobiliário, onde exclusividade e sofisticação transformam seus sonhos em realidade.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-6 reveal">
+            <a href="#imoveis" class="bg-luxe-gold-light luxe-black px-10 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-luxe-gold-dark transition-all duration-500 gold-glow">Explorar Imóveis</a>
+            <a href="#contato" class="border-luxe-gold luxe-gold-light px-10 py-4 uppercase tracking-widest text-sm font-semibold hover:bg-luxe-gold-light hover:luxe-black transition-all duration-500">Fale Conosco</a>
+        </div>
+    </div>
+    <div class="absolute bottom-10 left-0 right-0 text-center animate-pulse">
+        <a href="#imoveis" class="luxe-gold-light text-2xl"><i class="fas fa-chevron-down"></i></a>
+    </div>
+</section>
+
+<!-- Imóveis Destaque -->
+<section id="imoveis" class="py-24 luxe-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-cinzel font-bold luxe-gold-light reveal">Imóveis de Alto Padrão</h2>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto reveal">Uma coleção exclusiva de propriedades que combinam design, conforto e localização privilegiada.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Imóvel 1 -->
+            <div class="luxe-gray rounded-lg overflow-hidden card-hover transition-all duration-500 reveal">
+                <div class="relative">
+                    <img src="https://picsum.photos/800/600?random=7" alt="Mansão Oceânica" class="w-full h-80 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-luxe-black to-transparent opacity-50 hover:opacity-70 transition-opacity duration-500"></div>
+                    <span class="absolute top-4 right-4 bg-luxe-gold-light luxe-black px-3 py-1 text-xs uppercase tracking-widest">Exclusivo</span>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-2">Mansão Oceânica</h3>
+                    <p class="text-gray-400 text-sm mb-4">Uma obra-prima à beira-mar com 5 suítes e vista infinita.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="luxe-gold-light font-semibold">R$ 12.000.000</span>
+                        <a href="#" class="luxe-gold-light hover:luxe-gold-dark flex items-center gap-2">
+                            <span>Ver Mais</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Imóvel 2 -->
+            <div class="luxe-gray rounded-lg overflow-hidden card-hover transition-all duration-500 reveal">
+                <div class="relative">
+                    <img src="https://picsum.photos/800/600?random=8" alt="Penthouse Urbana" class="w-full h-80 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-luxe-black to-transparent opacity-50 hover:opacity-70 transition-opacity duration-500"></div>
+                    <span class="absolute top-4 right-4 bg-luxe-gold-light luxe-black px-3 py-1 text-xs uppercase tracking-widest">Venda</span>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-2">Penthouse Urbana</h3>
+                    <p class="text-gray-400 text-sm mb-4">Cobertura de 4 suítes com terraço panorâmico no coração da cidade.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="luxe-gold-light font-semibold">R$ 7.500.000</span>
+                        <a href="#" class="luxe-gold-light hover:luxe-gold-dark flex items-center gap-2">
+                            <span>Ver Mais</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Imóvel 3 -->
+            <div class="luxe-gray rounded-lg overflow-hidden card-hover transition-all duration-500 reveal">
+                <div class="relative">
+                    <img src="https://picsum.photos/800/600?random=9" alt="Villa Campestre" class="w-full h-80 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-luxe-black to-transparent opacity-50 hover:opacity-70 transition-opacity duration-500"></div>
+                    <span class="absolute top-4 right-4 bg-luxe-gold-light luxe-black px-3 py-1 text-xs uppercase tracking-widest">Aluguel</span>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-2">Villa Campestre</h3>
+                    <p class="text-gray-400 text-sm mb-4">Propriedade rural com 6 quartos e área de lazer completa.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="luxe-gold-light font-semibold">R$ 25.000 /mês</span>
+                        <a href="#" class="luxe-gold-light hover:luxe-gold-dark flex items-center gap-2">
+                            <span>Ver Mais</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-12 reveal">
+            <a href="#" class="border-luxe-gold luxe-gold-light px-8 py-3 uppercase tracking-widest text-sm font-semibold hover:bg-luxe-gold-light hover:luxe-black transition-all duration-500">Ver Portfólio Completo</a>
+        </div>
+    </div>
+</section>
+
+<!-- Serviços Exclusivos -->
+<section id="servicos" class="py-24 luxe-black">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-cinzel font-bold luxe-gold-light reveal">Serviços Exclusivos</h2>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto reveal">Oferecemos soluções personalizadas para atender às suas expectativas com sofisticação.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Serviço 1 -->
+            <div class="p-8 luxe-gray rounded-lg card-hover reveal">
+                <i class="fas fa-gem text-4xl luxe-gold-light mb-4 gold-particle"></i>
+                <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-3">Curadoria de Imóveis</h3>
+                <p class="text-gray-400">Seleção meticulosa de propriedades que refletem seu estilo e aspirações.</p>
+            </div>
+            <!-- Serviço 2 -->
+            <div class="p-8 luxe-gray rounded-lg card-hover reveal">
+                <i class="fas fa-handshake text-4xl luxe-gold-light mb-4 gold-particle"></i>
+                <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-3">Negociação de Elite</h3>
+                <p class="text-gray-400">Intermediação estratégica para garantir as melhores condições de compra ou venda.</p>
+            </div>
+            <!-- Serviço 3 -->
+            <div class="p-8 luxe-gray rounded-lg card-hover reveal">
+                <i class="fas fa-shield-alt text-4xl luxe-gold-light mb-4 gold-particle"></i>
+                <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-3">Concierge Jurídico</h3>
+                <p class="text-gray-400">Suporte completo para transações seguras e sem complicações.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sobre Nós -->
+<section id="sobre" class="py-24 luxe-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="relative reveal">
+                <img src="https://picsum.photos/800/1000?random=11" alt="Parnassa Luxe" class="w-full h-[500px] object-cover rounded-lg">
+                <div class="absolute inset-0 border-luxe-gold opacity-50 hover:opacity-100 transition-opacity duration-500"></div>
+                <div class="absolute -bottom-6 -right-6 w-64 h-64 border-luxe-gold rounded-lg animate-pulse"></div>
+            </div>
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl font-cinzel font-bold luxe-gold-light mb-6">Nossa História</h2>
+                <p class="text-gray-400 mb-6">A Parnassa Luxe é sinônimo de excelência no mercado imobiliário, oferecendo uma experiência única para clientes que buscam o extraordinário.</p>
+                <p class="text-gray-400 mb-8">Com uma equipe apaixonada por transformar visões em realidade, curamos propriedades que transcendem o comum, unindo design, localização e exclusividade.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <span class="luxe-gold-light text-4xl font-cinzel font-bold">20+</span>
+                        <p class="text-gray-400 text-sm">Anos de Mercado</p>
+                    </div>
+                    <div>
+                        <span class="luxe-gold-light text-4xl font-cinzel font-bold">500+</span>
+                        <p class="text-gray-400 text-sm">Negócios Fechados</p>
+                    </div>
+                </div>
+                <a href="#contato" class="mt-8 inline-block border-luxe-gold luxe-gold-light px-8 py-3 uppercase tracking-widest text-sm font-semibold hover:bg-luxe-gold-light hover:luxe-black transition-all duration-500">Saiba Mais</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Depoimentos -->
+<section class="py-24 luxe-black">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-cinzel font-bold luxe-gold-light reveal">Vozes do Luxo</h2>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto reveal">Ouça o que nossos clientes dizem sobre a experiência Parnassa.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Depoimento 1 -->
+            <div class="p-6 luxe-gray rounded-lg card-hover reveal">
+                <p class="text-gray-300 italic mb-6">"A Parnassa transformou minha busca por um lar em uma jornada inesquecível de sofisticação."</p>
+                <div class="flex items-center">
+                    <img src="https://picsum.photos/100/100?random=12" alt="Cliente" class="w-12 h-12 rounded-full mr-4">
+                    <div>
+                        <h4 class="luxe-gold-light font-semibold">Marina Torres</h4>
+                        <p class="text-gray-400 text-sm">Empresária</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Depoimento 2 -->
+            <div class="p-6 luxe-gray rounded-lg card-hover reveal">
+                <p class="text-gray-300 italic mb-6">"Profissionalismo impecável e atenção aos detalhes que fizeram toda a diferença."</p>
+                <div class="flex items-center">
+                    <img src="https://picsum.photos/100/100?random=13" alt="Cliente" class="w-12 h-12 rounded-full mr-4">
+                    <div>
+                        <h4 class="luxe-gold-light font-semibold">Felipe Castro</h4>
+                        <p class="text-gray-400 text-sm">Investidor</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Depoimento 3 -->
+            <div class="p-6 luxe-gray rounded-lg card-hover reveal">
+                <p class="text-gray-300 italic mb-6">"Um serviço que combina elegância e eficiência, superando todas as expectativas."</p>
+                <div class="flex items-center">
+                    <img src="https://picsum.photos/100/100?random=14" alt="Cliente" class="w-12 h-12 rounded-full mr-4">
+                    <div>
+                        <h4 class="luxe-gold-light font-semibold">Laura Mendes</h4>
+                        <p class="text-gray-400 text-sm">Arquiteta</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contato -->
+<section id="contato" class="py-24 luxe-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-cinzel font-bold luxe-gold-light reveal">Conecte-se ao Luxo</h2>
+            <p class="text-gray-400 mt-4 max-w-2xl mx-auto reveal">Entre em contato para iniciar sua jornada com a Parnassa.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="reveal">
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-map-marker-alt luxe-gold-light text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="luxe-gold-light font-semibold">Endereço</h4>
+                            <p class="text-gray-400">Av. Atlântica, 500 - Copacabana, Rio de Janeiro - RJ</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-phone luxe-gold-light text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="luxe-gold-light font-semibold">Telefone</h4>
+                            <p class="text-gray-400">(21) 9876-5432</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-envelope luxe-gold-light text-2xl mr-4"></i>
+                        <div>
+                            <h4 class="luxe-gold-light font-semibold">Email</h4>
+                            <p class="text-gray-400">luxe@parnassa.com.br</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-4 mt-8">
+                    <a href="#" class="w-12 h-12 border-luxe-gold rounded-full flex items-center justify-center luxe-gold-light hover:bg-luxe-gold-light hover:luxe-black transition-all duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 border-luxe-gold rounded-full flex items-center justify-center luxe-gold-light hover:bg-luxe-gold-light hover:luxe-black transition-all duration-300">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 border-luxe-gold rounded-full flex items-center justify-center luxe-gold-light hover:bg-luxe-gold-light hover:luxe-black transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="luxe-gray p-8 rounded-lg reveal">
+                <h3 class="text-2xl font-cinzel font-semibold luxe-gold-light mb-6">Deixe Sua Mensagem</h3>
+                <form id="contact-form">
+                    <input type="text" name="nome" placeholder="Nome" class="w-full luxe-dark border-luxe-gold text-white p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-luxe-gold-light transition-all duration-300" required>
+                    <input type="email" name="email" placeholder="Email" class="w-full luxe-dark border-luxe-gold text-white p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-luxe-gold-light transition-all duration-300" required>
+                    <textarea name="mensagem" placeholder="Mensagem" rows="5" class="w-full luxe-dark border-luxe-gold text-white p-3 rounded mb-6 focus:outline-none focus:ring-2 focus:ring-luxe-gold-light transition-all duration-300" required></textarea>
+                    <button type="submit" class="w-full bg-luxe-gold-light luxe-black px-8 py-3 uppercase tracking-widest text-sm font-semibold hover:bg-luxe-gold-dark transition-all duration-500 gold-glow">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="luxe-black py-12 border-t border-gray-700">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="reveal">
+                <div class="luxe-gold-light font-cinzel text-3xl font-bold gold-glow mb-4">PARNASSA LUXE</div>
+                <p class="text-gray-400 text-sm">Onde o luxo encontra seu endereço perfeito.</p>
+            </div>
+            <div class="reveal">
+                <h4 class="luxe-gold-light font-cinzel font-semibold mb-4">Navegação</h4>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#home" class="hover:luxe-gold-light transition-colors duration-300">Home</a></li>
+                    <li><a href="#imoveis" class="hover:luxe-gold-light transition-colors duration-300">Imóveis</a></li>
+                    <li><a href="#servicos" class="hover:luxe-gold-light transition-colors duration-300">Serviços</a></li>
+                    <li><a href="#sobre" class="hover:luxe-gold-light transition-colors duration-300">Sobre</a></li>
+                    <li><a href="#contato" class="hover:luxe-gold-light transition-colors duration-300">Contato</a></li>
+                </ul>
+            </div>
+            <div class="reveal">
+                <h4 class="luxe-gold-light font-cinzel font-semibold mb-4">Newsletter</h4>
+                <p class="text-gray-400 text-sm mb-4">Inscreva-se para novidades exclusivas.</p>
+                <form id="newsletter-form">
+                    <div class="flex">
+                        <input type="email" placeholder="Seu email" class="w-full luxe-dark border-luxe-gold text-white p-2 rounded-l focus:outline-none focus:ring-2 focus:ring-luxe-gold-light">
+                        <button type="submit" class="bg-luxe-gold-light luxe-black px-4 py-2 rounded-r hover:bg-luxe-gold-dark transition-all duration-300">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-gray-700 text-center text-gray-400 text-sm reveal">
+            © 2025 Parnassa Luxe. Todos os direitos reservados.
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script>
+    // Particles.js
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 50, density: { enable: true, value_area: 800 } },
+            color: { value: '#D4A017' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.3, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: false },
+            move: { enable: true, speed: 1, direction: 'none', random: true }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' } },
+            modes: { repulse: { distance: 100 }, push: { particles_nb: 4 } }
+        }
+    });
+
+    // Navbar Scroll
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('nav');
+        navbar.classList.toggle('luxe-black', window.scrollY > 50);
+        navbar.classList.toggle('shadow-lg', window.scrollY > 50);
+    });
+
+    // Mobile Menu
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const icon = mobileMenuButton.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector(anchor.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Form Submission
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Mensagem enviada com sucesso!');
+        e.target.reset();
+    });
+    document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Inscrito com sucesso!');
+        e.target.reset();
+    });
+</script>
+
+</body>
+</html>

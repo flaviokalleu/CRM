@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PARNASSÁ Imobiliária - Tornando seu sonho realidade.">
+    <title>PARNASSÁ Imobiliária | Tornando seu sonho realidade</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            light: '#D4AF37',
+                            DEFAULT: '#CFB53B',
+                            dark: '#996515'
+                        },
+                        elegant: {
+                            black: '#121212',
+                            dark: '#1E1E1E',
+                            gray: '#2D2D2D'
+                        }
+                    },
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'cinzel': ['Cinzel', 'serif'],
+                        'lora': ['Lora', 'serif']
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { backgroundPosition: '-500px 0' },
+                            '100%': { backgroundPosition: '500px 0' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        sparkle: {
+                            '0%': { left: '-100%' },
+                            '100%': { left: '200%' }
+                        },
+                        pulseIcon: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.1)' }
+                        }
+                    },
+                    animation: {
+                        shimmer: 'shimmer 3s infinite linear',
+                        fadeIn: 'fadeIn 0.8s ease-out forwards',
+                        slideIn: 'slideIn 0.6s ease-out forwards',
+                        sparkle: 'sparkle 2s infinite',
+                        pulseIcon: 'pulseIcon 1.5s infinite'
+                    },
+                    borderRadius: {
+                        'lg': '12px',
+                        'xl': '16px',
+                        'sm': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cinzel:wght@400;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Lora', serif;
+            letter-spacing: 0.5px;
+            background: #121212;
+        }
+
+        /* Bordas Arredondadas */
+        .btn-rounded {
+            border-radius: 12px;
+            transition: all 0.4s ease;
+        }
+        .card-rounded {
+            border-radius: 16px !important;
+            overflow: hidden;
+        }
+        .input-rounded {
+            border-radius: 8px;
+        }
+        .social-icon a {
+            border-radius: 50%;
+        }
+        .section-box {
+            border-radius: 10px;
+        }
+
+        /* Efeitos na Fonte */
+        .luxury-text {
+            font-family: 'Cinzel', serif;
+            text-shadow: 1px 1px 6px rgba(212, 175, 55, 0.5);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .luxury-text:hover {
+            transform: scale(1.05);
+            color: #D4AF37;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #D4AF37, #E5C100, #CFB53B, #D4AF37);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: shimmer 3s infinite linear;
+        }
+        .sparkle-text {
+            position: relative;
+            overflow: hidden;
+        }
+        .sparkle-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.6), transparent);
+            transform: skewX(-25deg);
+            animation: sparkle 2s infinite;
+        }
+
+        /* Botões */
+        .gold-sparkle {
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        .gold-sparkle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.4), transparent);
+            transform: skewX(-25deg);
+            animation: shimmer 3s infinite;
+        }
+
+        /* Cartões de Imóveis */
+        .bg-elegant-gray {
+            border-radius: 16px;
+            transition: transform 0.4s ease;
+        }
+        .group:hover .bg-elegant-gray {
+            transform: translateY(-10px);
+        }
+        .group:hover .luxury-text {
+            color: #D4AF37;
+        }
+        .group:hover img {
+            filter: brightness(1.1);
+        }
+        .gold-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(212, 175, 55, 0.2), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .group:hover .gold-overlay {
+            opacity: 1;
+        }
+
+        /* Formulários */
+        input, textarea, button {
+            border-radius: 8px !important;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Animações */
+        .fade-in-up {
+            animation: fadeIn 1s ease-out;
+        }
+        .pulse-icon {
+            animation: pulseIcon 1.5s infinite;
+        }
+
+        /* Partículas no Hero */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-elegant-black text-white font-lora">
+
+<!-- Navbar -->
+<nav class="fixed top-0 w-full z-20 transition-all duration-500" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="static/img/logos/logo.png" alt="PARNASSÁ Imobiliária Logo" class="h-12 w-auto gold-sparkle">
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="#" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+            <a href="/imoveis/" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+            <a href="#sobre" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+            <a href="https://wa.me/5561995734984" class="text-white hover:text-gold-light transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+            <a href="/login/" class="border border-gold-light text-gold-light px-5 py-2 hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+        </div>
+        <div class="md:hidden flex items-center">
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden bg-elegant-dark py-4 px-4 md:hidden">
+        <a href="#" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Início</a>
+        <a href="/imoveis/" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Imóveis</a>
+        <a href="#sobre" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Sobre</a>
+        <a href="https://wa.me/5561995734984" class="block text-white hover:text-gold-light py-2 transition-colors duration-300 text-sm uppercase tracking-wider font-cinzel luxury-text">Contato</a>
+        <a href="/login/" class="block border border-gold-light text-gold-light px-4 py-2 mt-4 text-center hover:bg-gold-light hover:text-elegant-black transition-all duration-300 text-sm uppercase tracking-widest btn-rounded font-cinzel luxury-text">Login</a>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative h-screen flex items-center justify-center">
+    <div class="absolute inset-0 bg-elegant-black overflow-hidden">
+        <div id="particles-js"></div>
+        <video autoplay loop muted class="absolute w-full h-full object-cover opacity-50">
+            <source src="https://cidadereservadovale.com.br/wp-content/uploads/2025/01/6035772_Mother_Kid_1920x1080.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <div class="inline-block mb-3 fade-in-up">
+            <span class="inline-block h-px w-16 bg-gold-light mr-4 align-middle"></span>
+            <span class="text-gold-light text-sm font-light uppercase tracking-widest font-cinzel luxury-text">TORNANDO SEU SONHO REALIDADE</span>
+            <span class="inline-block h-px w-16 bg-gold-light ml-4 align-middle"></span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-playfair font-bold mb-6 fade-in-up gold-gradient-text">PARNASSÁ IMOBILIÁRIA</h1>
+        <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto fade-in-up font-lora">Transformamos sonhos em chave: imóveis com elegância, conforto e exclusividade, no endereço certo para você.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in-up">
+            <a href="/imoveis/" class="bg-gold-light text-elegant-black px-8 py-3 uppercase tracking-wider text-sm font-medium hover:bg-gold-dark transition-all duration-300 gold-sparkle btn-rounded font-cinzel sparkle-text">Conheça Nossos Imóveis</a>
+            <a href="https://wa.me/5561995734984" class="border border-white text-white px-8 py-3 uppercase tracking-wider text-sm font-medium hover:border-gold-light hover:text-gold-light transition-all duration-300 btn-rounded font-cinzel luxury-text">Entre em Contato</a>
+        </div>
+    </div>
+    <div class="absolute bottom-10 left-0 right-0 text-center">
+        <a href="/imoveis" class="inline-block text-white animate-bounce">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+    </div>
+</section>
+
+<!-- Imóveis Section -->
+<section id="imoveis" class="py-20 bg-elegant-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="text-gold-light text-sm uppercase tracking-widest fade-in-up font-cinzel luxury-text">Portfólio Exclusivo</span>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 fade-in-up gold-gradient-text">Imóveis Selecionados</h2>
+            <div class="w-24 h-1 bg-gold-light mx-auto mt-6 fade-in-up"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {% for imovel in imoveis %}
+            <div class="bg-elegant-gray card-rounded group fade-in-up">
+                <div class="relative overflow-hidden">
+                    <img src="{{ imovel.imagem_de_capa.url }}" alt="{{ imovel.nome_do_imovel }}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="gold-overlay"></div>
+                    <div class="absolute top-4 right-4 bg-gold-light text-elegant-black px-3 py-1 text-xs uppercase tracking-wider btn-rounded">{{ imovel.tipo_imovel|title }}</div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-cinzel font-semibold mb-2 luxury-text">{{ imovel.nome_do_imovel }}</h3>
+                    <p class="text-gray-400 mb-4 text-sm font-lora line-clamp-3">{{ imovel.descricao }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gold-light font-semibold font-cinzel price">R$ {{ imovel.valor_de_venda|floatformat:2 }}</span>
+                        <a href="{% url 'detalhes_imovel' imovel_id=imovel.pk %}" class="text-white hover:text-gold-light transition-colors duration-300 flex items-center gap-2 font-cinzel luxury-text">
+                            <span>Detalhes</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12 fade-in-up">
+            <a href="/imoveis/" class="inline-block border border-gold-light text-gold-light px-8 py-3 uppercase tracking-wider text-sm font-medium hover:bg-gold-light hover:text-elegant-black transition-all duration-300 btn-rounded font-cinzel luxury-text">Ver Todos os Imóveis</a>
+        </div>
+    </div>
+</section>
+
+<!-- Serviços Premium -->
+<section class="py-20 bg-elegant-black">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="text-gold-light text-sm uppercase tracking-widest fade-in-up font-cinzel luxury-text">Nossos Serviços</span>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 fade-in-up gold-gradient-text">Atendimento Premium</h2>
+            <div class="w-24 h-1 bg-gold-light mx-auto mt-6 fade-in-up"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Serviço 1 -->
+            <div class="p-6 border border-elegant-gray hover:border-gold-light transition-all duration-500 fade-in-up section-box">
+                <div class="w-16 h-16 flex items-center justify-center text-gold-light mb-4 pulse-icon">
+                    <i class="fas fa-home text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-cinzel font-semibold mb-3 luxury-text">Consultoria Imobiliária</h3>
+                <p class="text-gray-400 font-lora">Assessoria personalizada para encontrar o imóvel que corresponda exatamente às suas necessidades e desejos.</p>
+            </div>
+            
+            <!-- Serviço 2 -->
+            <div class="p-6 border border-elegant-gray hover:border-gold-light transition-all duration-500 fade-in-up section-box">
+                <div class="w-16 h-16 flex items-center justify-center text-gold-light mb-4 pulse-icon">
+                    <i class="fas fa-key text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-cinzel font-semibold mb-3 luxury-text">Intermediação de Vendas</h3>
+                <p class="text-gray-400 font-lora">Processo de venda transparente e eficiente, com estratégias de marketing personalizadas para seu imóvel.</p>
+            </div>
+            
+            <!-- Serviço 3 -->
+            <div class="p-6 border border-elegant-gray hover:border-gold-light transition-all duration-500 fade-in-up section-box">
+                <div class="w-16 h-16 flex items-center justify-center text-gold-light mb-4 pulse-icon">
+                    <i class="fas fa-file-signature text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-cinzel font-semibold mb-3 luxury-text">Assessoria Jurídica</h3>
+                <p class="text-gray-400 font-lora">Suporte jurídico completo para garantir segurança e tranquilidade em todas as etapas da transação.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sobre Nós -->
+<section id="sobre" class="py-20 bg-elegant-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="fade-in-up">
+                <span class="text-gold-light text-sm uppercase tracking-widest font-cinzel luxury-text">Conheça a PARNASSÁ</span>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 mb-6 gold-gradient-text">Sobre Nós</h2>
+                <div class="w-24 h-1 bg-gold-light mb-6"></div>
+                <p class="text-gray-300 mb-6 font-lora">Na PARNASSÁ Imobiliária, dedicamo-nos a proporcionar uma experiência imobiliária de excelência, unindo sofisticação e praticidade em cada etapa do processo.</p>
+                <p class="text-gray-300 mb-6 font-lora">Com um portfólio exclusivo de propriedades de alto padrão, nossa equipe de profissionais especializados trabalha para encontrar o lar dos seus sonhos ou o investimento ideal que corresponde às suas expectativas.</p>
+                <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                    <div class="text-center sm:text-left">
+                        <span class="text-gold-light text-3xl font-playfair font-bold">15+</span>
+                        <p class="text-gray-400 text-sm mt-1 font-lora">Anos de Experiência</p>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <span class="text-gold-light text-3xl font-playfair font-bold">300+</span>
+                        <p class="text-gray-400 text-sm mt-1 font-lora">Imóveis Vendidos</p>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <span class="text-gold-light text-3xl font-playfair font-bold">98%</span>
+                        <p class="text-gray-400 text-sm mt-1 font-lora">Clientes Satisfeitos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="relative fade-in-up bg-white card-rounded">
+                <img src="static/img/logos/logo.png" alt="Sobre a PARNASSÁ" class="w-full h-auto card-rounded">
+                <div class="absolute -bottom-6 -left-6 w-48 h-48 border-2 border-gold-light card-rounded"></div>
+                <div class="absolute -top-6 -right-6 w-48 h-48 border-2 border-gold-light card-rounded"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Depoimentos -->
+<section class="py-20 bg-elegant-black">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="text-gold-light text-sm uppercase tracking-widest fade-in-up font-cinzel luxury-text">O que dizem nossos clientes</span>
+            <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 fade-in-up gold-gradient-text">Depoimentos</h2>
+            <div class="w-24 h-1 bg-gold-light mx-auto mt-6 fade-in-up"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Depoimento 1 -->
+            <div class="bg-elegant-gray p-6 card-rounded fade-in-up section-box">
+                <div class="text-gold-light mb-4">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="text-gray-300 italic mb-6 font-lora">"O atendimento da PARNASSÁ superou todas as minhas expectativas. Conseguiram encontrar exatamente o que eu procurava em tempo recorde."</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                        <img src="https://picsum.photos/100/100?random=4" alt="Cliente" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Carlos Mendes</h4>
+                        <p class="text-gray-400 text-sm font-lora">Empresário</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Depoimento 2 -->
+            <div class="bg-elegant-gray p-6 card-rounded fade-in-up section-box">
+                <div class="text-gold-light mb-4">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="text-gray-300 italic mb-6 font-lora">"Profissionais extremamente competentes e atenciosos. Todo o processo de compra foi tranquilo e sem complicações. Recomendo!"</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                        <img src="https://picsum.photos/100/100?random=5" alt="Cliente" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Ana Luiza Costa</h4>
+                        <p class="text-gray-400 text-sm font-lora">Médica</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Depoimento 3 -->
+            <div class="bg-elegant-gray p-6 card-rounded fade-in-up section-box">
+                <div class="text-gold-light mb-4">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="text-gray-300 italic mb-6 font-lora">"A PARNASSÁ entende as necessidades do cliente. Encontraram o imóvel dos meus sonhos em uma localização privilegiada."</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full overflow-hidden mr-4">
+                        <img src="https://picsum.photos/100/100?random=6" alt="Cliente" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Roberto Almeida</h4>
+                        <p class="text-gray-400 text-sm font-lora">Arquiteto</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contato -->
+<section class="py-20 bg-elegant-dark">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="fade-in-up">
+                <span class="text-gold-light text-sm uppercase tracking-widest font-cinzel luxury-text">Fale Conosco</span>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mt-2 mb-6 gold-gradient-text">Entre em Contato</h2>
+                <div class="w-24 h-1 bg-gold-light mb-6"></div>
+                <p class="text-gray-300 mb-8 font-lora">Estamos à disposição para esclarecer suas dúvidas e ajudá-lo a encontrar o imóvel ideal para suas necessidades.</p>
+                
+                <div class="flex items-start mb-6">
+                    <div class="text-gold-light mr-4 mt-1">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Endereço</h4>
+                        <p class="text-gray-400 font-lora">Nº SN - Parque Esplanada III, Valparaíso de Goiás - GO Rua, R. Vinte e Nove, 01, Valparaíso de Goiás - GO, 72876-354</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start mb-6">
+                    <div class="text-gold-light mr-4 mt-1">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Telefone</h4>
+                        <p class="text-gray-400 font-lora">(61) 9573-4984</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start mb-6">
+                    <div class="text-gold-light mr-4 mt-1">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold font-cinzel luxury-text">Email</h4>
+                        <p class="text-gray-400 font-lora">parnassaimobiliaria@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4 mt-8 social-icon">
+                    <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full border border-gold-light flex items-center justify-center text-gold-light hover:bg-gold-light hover:text-elegant-black transition-all duration-300">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-elegant-gray p-8 card-rounded fade-in-up section-box">
+                <h3 class="text-2xl font-cinzel font-semibold mb-6 luxury-text gold-gradient-text">Envie sua Mensagem</h3>
+                <form id="contact-form">
+                    <div class="mb-4">
+                        <input type="text" name="nome" placeholder="Nome Completo" class="w-full bg-elegant-black border border-gray-700 text-white p-3 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="email" name="email" placeholder="Email" class="w-full bg-elegant-black border border-gray-700 text-white p-3 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora" required>
+                    </div>
+                    <div class="mb-4">
+                        <input type="tel" name="telefone" placeholder="Telefone" class="w-full bg-elegant-black border border-gray-700 text-white p-3 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora">
+                    </div>
+                    <div class="mb-6">
+                        <textarea name="mensagem" placeholder="Mensagem" rows="4" class="w-full bg-elegant-black border border-gray-700 text-white p-3 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora" required></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-gold-light text-elegant-black px-8 py-3 uppercase tracking-wider text-sm font-medium hover:bg-gold-dark transition-all duration-300 gold-sparkle btn-rounded font-cinzel sparkle-text">Enviar Mensagem</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-elegant-black py-12 border-t border-elegant-gray">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- Logo e Descrição -->
+            <div class="fade-in-up">
+                <img src="static/img/logos/logo.png" alt="PARNASSÁ Imobiliária Logo" class="h-12 w-auto mb-4 gold-sparkle">
+                <p class="text-gray-400 text-sm font-lora">Elegância, sofisticação e exclusividade na busca pelo seu imóvel ideal.</p>
+            </div>
+            
+            <!-- Links Rápidos -->
+            <div class="fade-in-up">
+                <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Links Rápidos</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Início</a></li>
+                    <li><a href="/imoveis/" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Imóveis</a></li>
+                    <li><a href="#sobre" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Sobre</a></li>
+                    <li><a href="https://wa.me/5561995734984" class="text-gray-400 hover:text-gold-light transition-colors duration-300 text-sm font-lora">Contato</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contato -->
+            <div class="fade-in-up">
+                <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Contato</h4>
+                <ul class="space-y-2 text-gray-400 text-sm font-lora">
+                    <li><i class="fas fa-map-marker-alt mr-2"></i>Nº SN - Parque Esplanada III, Valparaíso de Goiás - GO Rua, R. Vinte e Nove, 01, Valparaíso de Goiás - GO, 72876-354</li>
+                    <li><i class="fas fa-phone mr-2"></i> (61) 9573-4984</li>
+                    <li><i class="fas fa-envelope mr-2"></i> parnassaimobiliaria@gmail.com</li>
+                </ul>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="fade-in-up">
+                <h4 class="text-gold-light font-cinzel font-semibold mb-4 luxury-text">Newsletter</h4>
+                <p class="text-gray-400 text-sm mb-4 font-lora">Receba novidades exclusivas sobre nossos imóveis.</p>
+                <form id="newsletter-form">
+                    <div class="flex">
+                        <input type="email" placeholder="Seu email" class="w-full bg-elegant-dark border border-gray-700 text-white p-2 input-rounded focus:outline-none focus:border-gold-light transition-all duration-300 font-lora">
+                        <button type="submit" class="bg-gold-light text-elegant-black px-4 py-2 btn-rounded hover:bg-gold-dark transition-all duration-300">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-12 pt-8 border-t border-elegant-gray text-center fade-in-up">
+            <p class="text-gray-400 text-sm font-lora">© 2025 PARNASSÁ Imobiliária. Todos os direitos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script>
+    // Função para formatar valores no padrão BRL (R$ 230.000,00)
+    function formatarParaReal(valor) {
+        // Converte o valor para número, removendo "R$" e espaços
+        let numero = valor.replace(/[^\d.,]/g, '').replace(',', '.');
+        numero = parseFloat(numero);
+        
+        // Verifica se o número é válido
+        if (isNaN(numero)) {
+            return 'Valor inválido';
+        }
+        
+        // Formata para o padrão BRL
+        return numero.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+    }
+
+    // Aplica a formatação apenas aos preços dos imóveis
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('#imoveis .price').forEach(element => {
+            const valorOriginal = element.textContent; // Ex.: "R$ 230000.00"
+            const valorFormatado = formatarParaReal(valorOriginal); // Ex.: "R$ 230.000,00"
+            element.textContent = valorFormatado;
+        });
+    });
+
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar');
+        navbar.classList.toggle('bg-elegant-black', window.scrollY > 50);
+        navbar.classList.toggle('shadow-lg', window.scrollY > 50);
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const icon = mobileMenuButton.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+
+    // Smooth Scroll for Sobre Link
+    document.querySelectorAll('a[href="#sobre"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector('#sobre').scrollIntoView({
+                behavior: 'smooth'
+            });
+            // Hide mobile menu after clicking
+            mobileMenu.classList.add('hidden');
+            const icon = mobileMenuButton.querySelector('i');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        });
+    });
+
+    // Reveal Animation on Scroll
+    const reveals = document.querySelectorAll('.fade-in-up');
+    const revealOnScroll = () => {
+        reveals.forEach(element => {
+            const windowHeight = window.innerHeight;
+            const elementTop = element.getBoundingClientRect().top;
+            const elementVisible = 100;
+
+            if (elementTop < windowHeight - elementVisible) {
+                element.classList.add('active');
+            }
+        });
+    };
+    window.addEventListener('scroll', revealOnScroll);
+    revealOnScroll();
+
+    // Form Submission
+    const contactForm = document.getElementById('contact-form');
+    const newsletterForm = document.getElementById('newsletter-form');
+    
+    contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+        contactForm.reset();
+    });
+
+    newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Inscrição realizada com sucesso! Você receberá nossas novidades.');
+        newsletterForm.reset();
+    });
+
+    // Particles.js Configuration
+    particlesJS('particles-js', {
+        particles: {
+            number: { value: 50, density: { enable: true, value_area: 800 } },
+            color: { value: '#D4AF37' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.5, random: true },
+            size: { value: 3, random: true },
+            line_linked: { enable: false },
+            move: { enable: true, speed: 1, direction: 'none', random: true, straight: false }
+        },
+        interactivity: {
+            detect_on: 'canvas',
+            events: { onhover: { enable: false }, onclick: { enable: false }, resize: true },
+        },
+        retina_detect: true
+    });
+</script>
+
+</body>
+</html>

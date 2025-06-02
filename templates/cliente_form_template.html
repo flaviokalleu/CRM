@@ -1,142 +1,344 @@
+<style>
+    .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 0%);
+   }
+    .form-container .header {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+    .form-container h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3c3f9f;
+    }
+    .form-container p {
+    color: #888;
+    }
+    .form-group {
+    margin-bottom: 16px;
+    color: black; 
+    }
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #fff;
+    }
+    .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+    color: black;
+    }
+    .form-group input:focus {
+    border-color: #a5acff;
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+    .error-message {
+    color: red;
+    font-size: 12px;
+    }
+    .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #3c3f9f;
+    color: white;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    }
+    .submit-btn:hover {
+    background-color: #292c7f;
+    }
+    .submit-btn:focus {
+    box-shadow: 0 0 5px rgba(165, 172, 255, 0.5);
+    }
+    .input-text-black input {
+    color: black; 
+    }
+    .text-center {
+      text-align: center;
+  }
+  /* Add this to your existing styles */
+.form-error-highlight {
+    border: 2px solid red; /* Red border for highlighted fields */
+    background-color: #FFB6C1; /* Light pink background for better visibility */
+}
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px; /* Add some spacing between the input and error message */
+}
+
+ </style>
+{% extends 'base.html' %}
+{% block main_content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Cliente</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <title>Criar Cliente</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gradient-to-r from-blue-900 to-blue-600 min-h-screen text-gray-100">
-
-<div class="container mx-auto py-12 px-4">
-    {% if messages %}
-    <div class="space-y-4 mb-8">
-        {% for message in messages %}
-            <div class="bg-red-500 text-white px-6 py-4 border rounded-md">
-                {{ message }}
+<body class="g-sidenav-show bg-gray-100">
+    <!-- Adicione isso em algum lugar do seu HTML, fora do formulário -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              
+              <h5 class="modal-title" id="errorModalLabel">Aguarde 5 Segundos ele irar fechar automaticamente</h5>
+              
             </div>
-        {% endfor %}
-        <a href="{% url 'dashboard_redirect' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Voltar</a>
-    </div>
-    {% endif %}
-
-    <h2 class="text-3xl mb-6 font-bold">Create Cliente</h2>
-    
-    <div class="bg-gray-800 p-8 rounded-lg shadow-md">
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
+            <div class="modal-body">
+              <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+             
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="form-container">
+        <div class="header">
+            <h2>Criar Cliente</h2>
+            <p>Insira as informações do cliente abaixo.</p>
+        </div>
+        <div id="error-container" class="text-center">
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="{% if message.tags %} {{ message.tags }} {% endif %}">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- Modifique a parte do seu formulário para exibir o nome do campo obrigatório -->
+<form id="client-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group text-black">
+            <label for="{{ field.id_for_label }}" class="text-black">{{ field.label }}</label>
             
-            <!-- Nome -->
-            <div>
-                <label for="{{ form.nome.id_for_label }}" class="block text-gray-300">Nome:</label>
-                {{ form.nome }}
-            </div>
-
-            <!-- Email -->
-            <div>
-                <label for="{{ form.email.id_for_label }}" class="block text-gray-300">Email:</label>
-                {{ form.email }}
-            </div>
-
-            <!-- Telefone -->
-            <div>
-                <label for="{{ form.telefone.id_for_label }}" class="block text-gray-300">Telefone:</label>
-                {{ form.telefone }}
-            </div>
-
-            <!-- Corretor -->
-            <div>
-                <label for="{{ form.corretor.id_for_label }}" class="block text-gray-300">Corretor:</label>
-                {{ form.corretor }}
-            </div>
-
-            <!-- CPF -->
-            <div>
-                <label for="{{ form.cpf.id_for_label }}" class="block text-gray-300">CPF:</label>
-                {{ form.cpf }}
-            </div>
-
-            <!-- Estado Civil -->
-            <div>
-                <label for="{{ form.estado_civil.id_for_label }}" class="block text-gray-300">Estado Civil:</label>
-                {{ form.estado_civil }}
-            </div>
-
-            <!-- Naturalidade -->
-            <div>
-                <label for="{{ form.naturalidade.id_for_label }}" class="block text-gray-300">Naturalidade:</label>
-                {{ form.naturalidade }}
-            </div>
-
-            <!-- Profissão -->
-            <div>
-                <label for="{{ form.profissao.id_for_label }}" class="block text-gray-300">Profissão:</label>
-                {{ form.profissao }}
-            </div>
-
-            <!-- Data de Admissão -->
-            <div>
-                <label for="{{ form.data_admissao.id_for_label }}" class="block text-gray-300">Data de Admissão:</label>
-                {{ form.data_admissao }}
-            </div>
-
-            <!-- Data de Nascimento -->
-            <div>
-                <label for="{{ form.data_nascimento.id_for_label }}" class="block text-gray-300">Data de Nascimento:</label>
-                {{ form.data_nascimento }}
-            </div>
-
-            <!-- Renda Tipo -->
-            <div>
-                <label for="{{ form.renda_tipo.id_for_label }}" class="block text-gray-300">Renda Tipo:</label>
-                {{ form.renda_tipo }}
-            </div>
-
-            <!-- Possui Carteira por mais de três anos -->
-            <div>
-                <label for="{{ form.possui_carteira_mais_tres_anos.id_for_label }}" class="block text-gray-300">Possui Carteira por mais de três anos:</label>
-                {{ form.possui_carteira_mais_tres_anos }}
-            </div>
-
-            <!-- Número do PIS -->
-            <div>
-                <label for="{{ form.numero_pis.id_for_label }}" class="block text-gray-300">Número do PIS:</label>
-                {{ form.numero_pis }}
-            </div>
-
-            <!-- Possui Dependente -->
-            <div>
-                <label for="{{ form.possui_dependente.id_for_label }}" class="block text-gray-300">Possui Dependente:</label>
-                {{ form.possui_dependente }}
-            </div>
-
-            <div class="space-y-4">
-                <label class="block text-gray-300">Upload de Documentos:</label>
-                {{ form.documentos }}
-            </div>
-            
-                        
-            <button type="submit" class="mt-4 px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded-full text-gray-100">Salvar</button>
-        </form>
+            {% if field.name == 'documentos_pessoais' or field.name == 'extrato_bancario' or field.name == 'documentos_dependente' or field.name == 'documentos_conjuge' %}
+        
+                <input type="file" name="{{ field.name }}_file" multiple class="text-white">
+                {% if form.instance.pk %}
+                    {% if field.value %}
+                        <p class="text-white">Arquivos já enviados: {% for file in field.value.all %}{{ file.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+                    {% else %}
+                        <p class="text-white">Nenhum arquivo enviado.</p>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {{ field }}
+            {% endif %}
+            {% if field.errors %}
+                <!-- Adicione um script JavaScript para abrir o modal automaticamente em caso de erro -->
+                <script>
+                    $(document).ready(function() {
+                        $('#errorModal').modal('show');
+                        $('#errorModal').find('.modal-body #errorMessage').text('{{ field.errors.0 }}: {{ field.label }}'); // Aqui incluímos o nome do campo na mensagem de erro
+                        // Fecha o modal automaticamente após 5 segundos
+                        setTimeout(function(){
+                            $('#errorModal').modal('hide');
+                        }, 5000); // Tempo em milissegundos (neste caso, 5 segundos)
+                    });
+                </script>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="button" id="submit-btn" class="submit-btn text-white">Salvar</button>
+</form>
+        
     </div>
-</div>
 
-<style>
-    input, select, textarea {
-        display: block;
-        width: 100%;
-        padding: 0.5rem;
-        margin-top: 0.5rem;
-        border: 1px solid #333;
-        border-radius: 0.25rem;
-        background-color: #333;
-        color: #FFF;
-    }
-    label {
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-</style>
+    <!-- Loading overlay and spinner styles -->
+    <style>
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-</body>
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #3c3f9f;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+    <div class="overlay" id="overlay">
+        <div class="spinner"></div>
+    </div>
 </html>
+<!-- No final do seu arquivo HTML, antes de fechar a tag </body> -->
+<script>
+    $(document).ready(function () {
+        // Formatar o campo "Valor de Renda" com R$ e separadores de milhares
+        // Formatar o campo "Valor de Renda" com R$ e ponto como separador de milhares e vírgula como separador decimal
+        $('#id_valor_da_renda').on('input', function () {
+            var valor = $(this).val().replace(/\D/g, ''); // Remover todos os não dígitos
+            if (valor.length > 0) {
+                valor = parseFloat(valor / 100).toFixed(2); // Dividir por 100 para tratar como centavos
+                valor = valor.replace('.', ','); // Trocar ponto por vírgula como separador decimal
+                valor = valor;
+            }
+            $(this).val(valor);
+        });
+
+        // Formatar o campo "Data de Nascimento" como DD/MM/AAAA
+        $('#id_data_nascimento').on('input', function () {
+            var data = $(this).val().replace(/\D/g, '');
+            if (data.length === 8) {
+                var dia = data.substring(0, 2);
+                var mes = data.substring(2, 4);
+                var ano = data.substring(4, 8);
+                $(this).val(dia + '/' + mes + '/' + ano);
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('client-form'); // Substitua 'client-form' pelo ID do seu formulário
+        var emailField = document.getElementById('id_email'); // Substitua 'id_email' pelo ID do campo de email
+    
+        form.addEventListener('input', function(event) {
+            if (event.target.tagName === 'INPUT') {
+                event.target.value = event.target.value.toUpperCase();
+            }
+        });
+    
+        // Adicione um ouvinte de evento específico para o campo de email
+        if (emailField) {
+            emailField.addEventListener('input', function(event) {
+                event.target.value = event.target.value.toUpperCase();
+            });
+        }
+    });
+    
+    
+</script>
+
+       <script>
+         document.addEventListener('DOMContentLoaded', function() {
+             var corretorSelect = document.getElementById('corretor-select');
+             var form = document.querySelector('form');
+             var errorContainer = document.getElementById('error-container');
+     
+             corretorSelect.addEventListener('change', function() {
+                 var selectedCorretorId = corretorSelect.value;
+                 console.log('ID do Corretor Selecionado:', selectedCorretorId);
+                 // You can use selectedCorretorId as needed
+             });
+     
+             form.addEventListener('submit', function(event) {
+                 var isValid = true;
+     
+                 // Clear previous error messages and field highlights
+                 errorContainer.innerHTML = '';
+                 form.querySelectorAll('.error-field').forEach(function(field) {
+                     field.classList.remove('error-field');
+                 });
+     
+                 // Check for form field errors
+                 var errorMessages = document.querySelectorAll('.error-message');
+                 errorMessages.forEach(function(errorMessage, index) {
+                     if (errorMessage.textContent.trim() !== '') {
+                         isValid = false;
+     
+                         // Display specific error message at the top of the form
+                         var fieldName = form[index].name;
+                         errorContainer.innerHTML += `<p class="error-message" style="color: red;">Erro no campo ${fieldName}: ${errorMessage.textContent}</p>`;
+     
+                         // Highlight the specific form field with the error
+                         var errorField = form[index];
+                         errorField.classList.add('error-field');
+                     }
+                 });
+     
+                 if (!isValid) {
+                     event.preventDefault(); // Prevent form submission if there are errors
+                 }
+             });
+     
+             // Add an event listener to clear the global error messages and field highlights when the user interacts with the form
+             form.addEventListener('input', function() {
+                 errorContainer.innerHTML = '';
+                 form.querySelectorAll('.error-field').forEach(function(field) {
+                     field.classList.remove('error-field');
+                 });
+             });
+         });
+     </script>
+     <script>
+        $(document).ready(function() {
+            $('#id_cpf').on('input', function() {
+                var cpf = $(this).val().replace(/\D/g, '');
+                if (cpf.length === 11) {
+                    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+                    $(this).val(cpf);
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('client-form');
+            var overlay = document.getElementById('overlay');
+            var submitBtn = document.getElementById('submit-btn');
+
+            submitBtn.addEventListener('click', function() {
+                // Show overlay and spinner
+                overlay.style.display = 'flex';
+
+                // Submit the form
+                form.submit();
+            });
+
+            // Optional: Reload the page after successful form submission
+            form.addEventListener('submit', function(event) {
+                // You can add additional logic here to check if the form submission was successful
+                // For simplicity, we're reloading the page unconditionally
+                location.reload();
+            });
+        });
+    </script>
+
+     
+     
+     
+       <script src="{% static 'js/core/popper.min.js' %}"></script>
+       <script src="{% static 'js/core/bootstrap.min.js' %}"></script>
+       <script src="{% static 'js/plugins/perfect-scrollbar.min.js' %}"></script>
+       <script src="{% static 'js/plugins/smooth-scrollbar.min.js' %}"></script>
+       <script src="{% static 'js/plugins/chartjs.min.js' %}"></script>  
+       <script src="{% static 'js/argon-dashboard.min.js' %}"></script>
+    </body>
+ </html>
+ {% endblock %}
